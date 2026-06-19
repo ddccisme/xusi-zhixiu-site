@@ -472,51 +472,62 @@
       // 没有图片时不启用放大镜
       if (galleryImages.length === 0) return;
 
-      mainImageWrap.addEventListener('mouseenter', () => {
-        lens.style.display = 'block';
-        zoomOverlay.style.display = 'block';
-        const url = encodeURI(zoomOverlay.dataset.src || mainImage.src);
-        zoomOverlay.style.backgroundImage = `url("${url}")`;
-      });
+      const bindZoomEvents = () => {
+        mainImageWrap.addEventListener('mouseenter', () => {
+          if (mainImage.naturalWidth === 0) return;
+          lens.style.display = 'block';
+          zoomOverlay.style.display = 'block';
+          const url = encodeURI(zoomOverlay.dataset.src || mainImage.src);
+          zoomOverlay.style.backgroundImage = `url("${url}")`;
+        });
 
-      mainImageWrap.addEventListener('mouseleave', () => {
-        lens.style.display = 'none';
-        zoomOverlay.style.display = 'none';
-      });
+        mainImageWrap.addEventListener('mouseleave', () => {
+          lens.style.display = 'none';
+          zoomOverlay.style.display = 'none';
+        });
 
-      mainImageWrap.addEventListener('mousemove', (e) => {
-        const imgRect = mainImage.getBoundingClientRect();
-        const lensW = lens.offsetWidth || 120;
-        const lensH = lens.offsetHeight || 120;
+        mainImageWrap.addEventListener('mousemove', (e) => {
+          const imgRect = mainImage.getBoundingClientRect();
+          const lensW = lens.offsetWidth || 120;
+          const lensH = lens.offsetHeight || 120;
 
-        // 鼠标相对于图片的位置
-        let x = e.clientX - imgRect.left;
-        let y = e.clientY - imgRect.top;
+          if (imgRect.width === 0 || imgRect.height === 0) return;
 
-        // lens 中心跟随鼠标
-        let lensX = x - lensW / 2;
-        let lensY = y - lensH / 2;
+          // 鼠标相对于图片的位置
+          let x = e.clientX - imgRect.left;
+          let y = e.clientY - imgRect.top;
 
-        // 限制 lens 不超出图片范围
-        lensX = Math.max(0, Math.min(lensX, imgRect.width - lensW));
-        lensY = Math.max(0, Math.min(lensY, imgRect.height - lensH));
+          // lens 中心跟随鼠标
+          let lensX = x - lensW / 2;
+          let lensY = y - lensH / 2;
 
-        lens.style.left = `${lensX}px`;
-        lens.style.top = `${lensY}px`;
+          // 限制 lens 不超出图片范围
+          lensX = Math.max(0, Math.min(lensX, imgRect.width - lensW));
+          lensY = Math.max(0, Math.min(lensY, imgRect.height - lensH));
 
-        // 计算放大区域：overlay 中背景图的偏移
-        // overlay 尺寸 / lens 尺寸 = 放大倍数
-        const ratioX = zoomOverlay.offsetWidth / lensW;
-        const ratioY = zoomOverlay.offsetHeight / lensH;
+          lens.style.left = `${lensX}px`;
+          lens.style.top = `${lensY}px`;
 
-        const bgWidth = imgRect.width * ratioX;
-        const bgHeight = imgRect.height * ratioY;
-        const bgPosX = -lensX * ratioX;
-        const bgPosY = -lensY * ratioY;
+          // 计算放大区域：overlay 中背景图的偏移
+          // overlay 尺寸 / lens 尺寸 = 放大倍数
+          const ratioX = zoomOverlay.offsetWidth / lensW;
+          const ratioY = zoomOverlay.offsetHeight / lensH;
 
-        zoomOverlay.style.backgroundSize = `${bgWidth}px ${bgHeight}px`;
-        zoomOverlay.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
-      });
+          const bgWidth = imgRect.width * ratioX;
+          const bgHeight = imgRect.height * ratioY;
+          const bgPosX = -lensX * ratioX;
+          const bgPosY = -lensY * ratioY;
+
+          zoomOverlay.style.backgroundSize = `${bgWidth}px ${bgHeight}px`;
+          zoomOverlay.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
+        });
+      };
+
+      if (mainImage.complete && mainImage.naturalWidth > 0) {
+        bindZoomEvents();
+      } else {
+        mainImage.addEventListener('load', bindZoomEvents, { once: true });
+      }
     }
 
     function renderDetail(item) {
