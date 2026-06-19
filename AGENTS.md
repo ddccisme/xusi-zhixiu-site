@@ -28,6 +28,52 @@
 
 - 所有动态插入的 HTML 必须通过 `escapeHtml` 或 `textContent` 处理，禁止直接拼接不可信内容到 `innerHTML`。
 
+### 4. 项目文档结构
+
+项目文档统一存放在 `docs/` 目录，根目录只保留入口说明：
+
+```
+00_web/
+├── README.md                   # 项目说明与快速开始
+├── AGENTS.md                   # 本文件：AI/Agent 开发指南
+├── docs/
+│   ├── PRD.md                  # 产品需求文档
+│   ├── USER_STORIES.md         # 用户故事与验收标准
+│   ├── implementation_plan.md  # 详细实施计划与里程碑
+│   ├── PROJECT_STATUS.md       # 项目当前状态
+│   ├── PROJECT_ISSUES.md       # 项目问题与风险
+│   └── 中国丝绸博物馆藏品分类整理.md
+```
+
+- 新增或调整文档位置时，需同步更新 `README.md` 的项目结构树以及各文档内部的交叉引用路径。
+
+## 开发调试
+
+### 启动本地服务
+
+```bash
+cd /Users/andy_dongcheng/Desktop/DC_WORK/WORKSPACE/16_文娱产业项目/00_web
+source .venv/bin/activate
+python scripts/search_server.py
+```
+
+服务默认监听 `http://127.0.0.1:8080`。
+
+### 强制刷新浏览器缓存
+
+虽然服务端已禁用 HTML/JS/CSS 缓存，但浏览器（尤其 Safari）可能仍 aggressively cache。调试时建议：
+
+1. 使用 `Cmd + Shift + R`（Safari/Chrome）强制刷新。
+2. 或在 URL 后加随机参数：`http://127.0.0.1:8080/detail.html?id=1815&_t=123`。
+3. 必要时清空浏览器缓存：`Safari → 开发 → 清空缓存` 或 `Chrome DevTools → Network → Disable cache`。
+
+### 前端改动验证流程
+
+1. 修改 `detail.html`、`assets/*.js`、`assets/*.css`。
+2. 确认 `search_server.py` 正在运行（静态文件由它提供）。
+3. 浏览器强制刷新后验证。
+4. 对于复杂交互（如放大镜），可用 Chrome DevTools Protocol 自动化截图验证。
+
 ## 藏品详情页（detail.html）放大镜实现
 
 ### 交互设计
@@ -105,3 +151,12 @@
 ```
 
 然后通过 CDP 发送 `mouseenter` / `mousemove` 事件并调用 `Page.captureScreenshot` 截图验证。
+
+## 最近变更记录
+
+| 时间 | 变更 | 提交 |
+|------|------|------|
+| 2026-06-20 | 修复 detail.html 放大镜不显示问题：调整 `initImageGallery` 调用时机、修复图片 URL 双重编码 | `16bf079` |
+| 2026-06-20 | 修复 `assets/main.js` 在 detail.html 上因缺少 `#mobileMenu` 与筛选 DOM 导致的 `null` 报错 | `c278d01` |
+| 2026-06-20 | 将项目文档（`PRD.md`、`USER_STORIES.md`、`implementation_plan.md`、`PROJECT_STATUS.md`、`PROJECT_ISSUES.md`、`中国丝绸博物馆藏品分类整理.md`）统一迁移到 `docs/` 目录 | `4480380`、`d79a465` |
+| 2026-06-20 | 新增本 `AGENTS.md` 文件，记录开发约定与放大镜实现细节 | `792eb2a` |
