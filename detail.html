@@ -40,21 +40,86 @@
       position: sticky;
       top: 120px;
       height: fit-content;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .detail-thumbnails {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 72px;
+      flex-shrink: 0;
+    }
+    .detail-thumbnail {
+      width: 72px;
+      height: 72px;
+      border-radius: 6px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background: var(--card-bg);
+      transition: border-color 0.2s;
+    }
+    .detail-thumbnail:hover,
+    .detail-thumbnail.active {
+      border-color: var(--accent, #B8916A);
     }
     .detail-main-image {
+      position: relative;
       border-radius: 8px;
       overflow: hidden;
       border: 1px solid var(--border-color);
+      flex: 1;
+      min-width: 0;
+      cursor: crosshair;
     }
     .detail-main-image img {
       width: 100%;
       height: auto;
       display: block;
     }
+    .detail-zoom-lens {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.15);
+      pointer-events: none;
+      display: none;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+    .detail-zoom-result {
+      width: 420px;
+      height: 420px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      display: none;
+      flex-shrink: 0;
+      background: var(--card-bg);
+      position: relative;
+    }
+    .detail-zoom-result img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: auto;
+      max-width: none;
+      pointer-events: none;
+    }
     .detail-image-caption {
       margin-top: 12px;
       color: var(--text-muted);
       font-size: 0.85rem;
+      width: 100%;
+    }
+    .detail-gallery-main {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
     }
     .detail-summary h1 {
       font-size: 2rem;
@@ -254,6 +319,23 @@
       }
       .detail-gallery {
         position: static;
+        flex-direction: column-reverse;
+      }
+      .detail-thumbnails {
+        flex-direction: row;
+        width: 100%;
+        overflow-x: auto;
+      }
+      .detail-thumbnail {
+        width: 64px;
+        height: 64px;
+        flex-shrink: 0;
+      }
+      .detail-main-image {
+        cursor: default;
+      }
+      .detail-zoom-result {
+        display: none !important;
       }
       .detail-meta {
         grid-template-columns: 1fr;
@@ -359,6 +441,83 @@
       return div.innerHTML;
     }
 
+    let galleryImages = [];
+    let galleryItemName = '';
+
+    function setActiveImage(index) {
+      if (!galleryImages[index]) return;
+      const img = galleryImages[index];
+      const mainImage = document.getElementById('mainImage');
+      const zoomResultImg = document.getElementById('zoomResultImg');
+      const url = img.relative_path ? `./kb/${img.relative_path}` : './assets/images/xusi/logo_0.jpg';
+      mainImage.src = url;
+      mainImage.alt = (img.alt || galleryItemName || '') + ' 主图';
+      if (zoomResultImg) zoomResultImg.src = url;
+
+      document.querySelectorAll('.detail-thumbnail').forEach((t, i) => {
+        t.classList.toggle('active', i === index);
+      });
+    }
+
+    function initImageGallery(images, itemName) {
+      galleryImages = images || [];
+      galleryItemName = itemName || '';
+      const mainImageWrap = document.getElementById('mainImageWrap');
+      const mainImage = document.getElementById('mainImage');
+      const lens = document.getElementById('zoomLens');
+      const zoomResult = document.getElementById('zoomResult');
+      const zoomResultImg = document.getElementById('zoomResultImg');
+      if (!mainImageWrap || !lens || !zoomResult) return;
+
+      // 只在非触摸设备启用放大镜
+      const isTouch = window.matchMedia('(pointer: coarse)').matches;
+      if (isTouch || galleryImages.length === 0) return;
+
+      mainImageWrap.addEventListener('mouseenter', () => {
+        lens.style.display = 'block';
+        zoomResult.style.display = 'block';
+      });
+
+      mainImageWrap.addEventListener('mouseleave', () => {
+        lens.style.display = 'none';
+        zoomResult.style.display = 'none';
+      });
+
+      mainImageWrap.addEventListener('mousemove', (e) => {
+        const rect = mainImageWrap.getBoundingClientRect();
+        const imgRect = mainImage.getBoundingClientRect();
+        const lensW = lens.offsetWidth || 120;
+        const lensH = lens.offsetHeight || 120;
+
+        // 鼠标相对于图片的位置
+        let x = e.clientX - imgRect.left;
+        let y = e.clientY - imgRect.top;
+
+        // lens 中心跟随鼠标
+        let lensX = x - lensW / 2;
+        let lensY = y - lensH / 2;
+
+        // 限制 lens 不超出图片范围
+        lensX = Math.max(0, Math.min(lensX, imgRect.width - lensW));
+        lensY = Math.max(0, Math.min(lensY, imgRect.height - lensH));
+
+        lens.style.left = `${lensX}px`;
+        lens.style.top = `${lensY}px`;
+
+        // 计算放大区域：result 中图片的偏移
+        // result 尺寸 / lens 尺寸 = 放大倍数
+        const ratioX = zoomResult.offsetWidth / lensW;
+        const ratioY = zoomResult.offsetHeight / lensH;
+
+        const imgOffsetX = -lensX * ratioX;
+        const imgOffsetY = -lensY * ratioY;
+
+        zoomResultImg.style.width = `${imgRect.width * ratioX}px`;
+        zoomResultImg.style.height = 'auto';
+        zoomResultImg.style.transform = `translate(${imgOffsetX}px, ${imgOffsetY}px)`;
+      });
+    }
+
     function renderDetail(item) {
       const mainImage = item.images && item.images.length > 0 ? item.images[0] : null;
       const imgUrl = mainImage ? `./kb/${mainImage.relative_path}` : './assets/images/xusi/logo_0.jpg';
@@ -389,18 +548,59 @@
 
       const gallery = document.createElement('div');
       gallery.className = 'detail-gallery';
+
+      // 缩略图列表
+      const thumbnails = document.createElement('div');
+      thumbnails.className = 'detail-thumbnails';
+      const images = item.images && item.images.length > 0 ? item.images : [{ relative_path: '' }];
+      images.forEach((img, idx) => {
+        const thumb = document.createElement('img');
+        thumb.className = 'detail-thumbnail' + (idx === 0 ? ' active' : '');
+        thumb.src = img.relative_path ? `./kb/${img.relative_path}` : './assets/images/xusi/logo_0.jpg';
+        thumb.alt = (img.alt || item.name || '') + ' 缩略图';
+        thumb.dataset.index = idx;
+        thumb.addEventListener('click', () => setActiveImage(idx));
+        thumbnails.appendChild(thumb);
+      });
+      gallery.appendChild(thumbnails);
+
+      // 主图 + 放大镜
+      const mainWrap = document.createElement('div');
+      mainWrap.className = 'detail-gallery-main';
       const mainImgWrap = document.createElement('div');
       mainImgWrap.className = 'detail-main-image';
+      mainImgWrap.id = 'mainImageWrap';
       const mainImg = document.createElement('img');
+      mainImg.id = 'mainImage';
       mainImg.src = imgUrl;
       mainImg.alt = item.name || '';
       mainImgWrap.appendChild(mainImg);
-      gallery.appendChild(mainImgWrap);
+      const lens = document.createElement('div');
+      lens.className = 'detail-zoom-lens';
+      lens.id = 'zoomLens';
+      mainImgWrap.appendChild(lens);
+      mainWrap.appendChild(mainImgWrap);
       const caption = document.createElement('p');
       caption.className = 'detail-image-caption';
       caption.textContent = item.collection_unit || '';
-      gallery.appendChild(caption);
+      mainWrap.appendChild(caption);
+      gallery.appendChild(mainWrap);
+
+      // 放大结果区
+      const zoomResult = document.createElement('div');
+      zoomResult.className = 'detail-zoom-result';
+      zoomResult.id = 'zoomResult';
+      const zoomResultImg = document.createElement('img');
+      zoomResultImg.id = 'zoomResultImg';
+      zoomResultImg.src = imgUrl;
+      zoomResultImg.alt = item.name || '';
+      zoomResult.appendChild(zoomResultImg);
+      gallery.appendChild(zoomResult);
+
       hero.appendChild(gallery);
+
+      // 初始化图片画廊交互
+      initImageGallery(images, item.name);
 
       const summary = document.createElement('div');
       summary.className = 'detail-summary';
