@@ -11,32 +11,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // 移动端菜单
+  // 移动端菜单（只在有对应 DOM 的页面生效）
   const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
   const mobileMenu = document.getElementById('mobileMenu');
-  mobileMenuBtn.addEventListener('click', function() {
-    mobileMenu.classList.toggle('open');
-    const spans = mobileMenuBtn.querySelectorAll('span');
-    if (mobileMenu.classList.contains('open')) {
-      spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-      spans[1].style.opacity = '0';
-      spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
-    } else {
-      spans[0].style.transform = 'none';
-      spans[1].style.opacity = '1';
-      spans[2].style.transform = 'none';
-    }
-  });
-
-  mobileMenu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      mobileMenu.classList.remove('open');
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', function() {
+      mobileMenu.classList.toggle('open');
       const spans = mobileMenuBtn.querySelectorAll('span');
-      spans[0].style.transform = 'none';
-      spans[1].style.opacity = '1';
-      spans[2].style.transform = 'none';
+      if (mobileMenu.classList.contains('open')) {
+        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+        spans[1].style.opacity = '0';
+        spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+      } else {
+        spans[0].style.transform = 'none';
+        spans[1].style.opacity = '1';
+        spans[2].style.transform = 'none';
+      }
     });
-  });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        const spans = mobileMenuBtn.querySelectorAll('span');
+        spans[0].style.transform = 'none';
+        spans[1].style.opacity = '1';
+        spans[2].style.transform = 'none';
+      });
+    });
+  }
 
   // 导航高亮
   const sections = document.querySelectorAll('section[id]');
