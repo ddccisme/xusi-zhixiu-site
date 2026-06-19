@@ -35,6 +35,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 60px;
+      position: relative;
     }
     .detail-gallery {
       position: sticky;
@@ -89,18 +90,21 @@
       display: none;
       box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
     }
-    .detail-zoom-result {
-      width: 420px;
-      height: 420px;
+    .detail-summary-wrap {
+      position: relative;
+      min-height: 420px;
+    }
+    .detail-zoom-overlay {
+      position: absolute;
+      inset: 0;
       border-radius: 8px;
       overflow: hidden;
       border: 1px solid var(--border-color);
-      display: none;
-      flex-shrink: 0;
       background: var(--card-bg);
-      position: relative;
+      display: none;
+      z-index: 10;
     }
-    .detail-zoom-result img {
+    .detail-zoom-overlay img {
       position: absolute;
       top: 0;
       left: 0;
@@ -334,7 +338,7 @@
       .detail-main-image {
         cursor: default;
       }
-      .detail-zoom-result {
+      .detail-zoom-overlay {
         display: none !important;
       }
       .detail-meta {
@@ -448,11 +452,11 @@
       if (!galleryImages[index]) return;
       const img = galleryImages[index];
       const mainImage = document.getElementById('mainImage');
-      const zoomResultImg = document.getElementById('zoomResultImg');
+      const zoomOverlayImg = document.getElementById('zoomOverlayImg');
       const url = img.relative_path ? `./kb/${img.relative_path}` : './assets/images/xusi/logo_0.jpg';
       mainImage.src = url;
       mainImage.alt = (img.alt || galleryItemName || '') + ' 主图';
-      if (zoomResultImg) zoomResultImg.src = url;
+      if (zoomOverlayImg) zoomOverlayImg.src = url;
 
       document.querySelectorAll('.detail-thumbnail').forEach((t, i) => {
         t.classList.toggle('active', i === index);
@@ -465,9 +469,9 @@
       const mainImageWrap = document.getElementById('mainImageWrap');
       const mainImage = document.getElementById('mainImage');
       const lens = document.getElementById('zoomLens');
-      const zoomResult = document.getElementById('zoomResult');
-      const zoomResultImg = document.getElementById('zoomResultImg');
-      if (!mainImageWrap || !lens || !zoomResult) return;
+      const zoomOverlay = document.getElementById('zoomOverlay');
+      const zoomOverlayImg = document.getElementById('zoomOverlayImg');
+      if (!mainImageWrap || !lens || !zoomOverlay) return;
 
       // 只在非触摸设备启用放大镜
       const isTouch = window.matchMedia('(pointer: coarse)').matches;
@@ -475,12 +479,12 @@
 
       mainImageWrap.addEventListener('mouseenter', () => {
         lens.style.display = 'block';
-        zoomResult.style.display = 'block';
+        zoomOverlay.style.display = 'block';
       });
 
       mainImageWrap.addEventListener('mouseleave', () => {
         lens.style.display = 'none';
-        zoomResult.style.display = 'none';
+        zoomOverlay.style.display = 'none';
       });
 
       mainImageWrap.addEventListener('mousemove', (e) => {
@@ -504,17 +508,17 @@
         lens.style.left = `${lensX}px`;
         lens.style.top = `${lensY}px`;
 
-        // 计算放大区域：result 中图片的偏移
-        // result 尺寸 / lens 尺寸 = 放大倍数
-        const ratioX = zoomResult.offsetWidth / lensW;
-        const ratioY = zoomResult.offsetHeight / lensH;
+        // 计算放大区域：overlay 中图片的偏移
+        // overlay 尺寸 / lens 尺寸 = 放大倍数
+        const ratioX = zoomOverlay.offsetWidth / lensW;
+        const ratioY = zoomOverlay.offsetHeight / lensH;
 
         const imgOffsetX = -lensX * ratioX;
         const imgOffsetY = -lensY * ratioY;
 
-        zoomResultImg.style.width = `${imgRect.width * ratioX}px`;
-        zoomResultImg.style.height = 'auto';
-        zoomResultImg.style.transform = `translate(${imgOffsetX}px, ${imgOffsetY}px)`;
+        zoomOverlayImg.style.width = `${imgRect.width * ratioX}px`;
+        zoomOverlayImg.style.height = 'auto';
+        zoomOverlayImg.style.transform = `translate(${imgOffsetX}px, ${imgOffsetY}px)`;
       });
     }
 
@@ -586,18 +590,23 @@
       mainWrap.appendChild(caption);
       gallery.appendChild(mainWrap);
 
-      // 放大结果区
-      const zoomResult = document.createElement('div');
-      zoomResult.className = 'detail-zoom-result';
-      zoomResult.id = 'zoomResult';
-      const zoomResultImg = document.createElement('img');
-      zoomResultImg.id = 'zoomResultImg';
-      zoomResultImg.src = imgUrl;
-      zoomResultImg.alt = item.name || '';
-      zoomResult.appendChild(zoomResultImg);
-      gallery.appendChild(zoomResult);
-
       hero.appendChild(gallery);
+
+      // 右侧详情 + 放大覆盖层
+      const summaryWrap = document.createElement('div');
+      summaryWrap.className = 'detail-summary-wrap';
+
+      const zoomOverlay = document.createElement('div');
+      zoomOverlay.className = 'detail-zoom-overlay';
+      zoomOverlay.id = 'zoomOverlay';
+      const zoomOverlayImg = document.createElement('img');
+      zoomOverlayImg.id = 'zoomOverlayImg';
+      zoomOverlayImg.src = imgUrl;
+      zoomOverlayImg.alt = item.name || '';
+      zoomOverlay.appendChild(zoomOverlayImg);
+      summaryWrap.appendChild(zoomOverlay);
+
+      hero.appendChild(summaryWrap);
 
       // 初始化图片画廊交互
       initImageGallery(images, item.name);
@@ -683,7 +692,7 @@
       });
       summary.appendChild(tagsEl);
 
-      hero.appendChild(summary);
+      summaryWrap.appendChild(summary);
       container.appendChild(hero);
 
       // 艺术评鉴
