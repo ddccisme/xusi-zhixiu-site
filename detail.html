@@ -84,11 +84,11 @@
       position: absolute;
       width: 120px;
       height: 120px;
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.25);
       pointer-events: none;
       display: none;
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.1);
     }
     .detail-summary-wrap {
       position: relative;
@@ -475,7 +475,7 @@
       mainImageWrap.addEventListener('mouseenter', () => {
         lens.style.display = 'block';
         zoomOverlay.style.display = 'block';
-        const url = zoomOverlay.dataset.src || mainImage.src;
+        const url = encodeURI(zoomOverlay.dataset.src || mainImage.src);
         zoomOverlay.style.backgroundImage = `url("${url}")`;
       });
 
