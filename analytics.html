@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据分析 - 叙思织绣</title>
+  <meta name="description" content="叙思织绣数据分析：藏品总数、来源分布、年代分布与热门标签统计。">
+  <meta property="og:title" content="数据分析 - 叙思织绣">
+  <meta property="og:description" content="藏品内容建设进度与分布概览。">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="./assets/style.css">
+  <style>
+    .analytics-page {
+      padding-top: 120px;
+      min-height: 100vh;
+    }
+    .analytics-header {
+      text-align: center;
+      padding: 60px 40px 40px;
+      background: var(--color-bg-light, #141414);
+    }
+    .analytics-header h1 {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    .analytics-header p {
+      color: var(--color-text-muted, #A89F91);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .metrics-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .metric-card {
+      background: var(--color-bg-card, #1A1A1A);
+      border: 1px solid var(--color-border, rgba(184, 145, 106, 0.2));
+      border-radius: 8px;
+      padding: 28px 24px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .metric-card:hover {
+      transform: translateY(-4px);
+    }
+    .metric-value {
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--color-primary, #B8916A);
+      margin-bottom: 8px;
+    }
+    .metric-label {
+      color: var(--color-text-muted, #A89F91);
+      font-size: 0.9rem;
+    }
+    .charts-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .chart-card {
+      background: var(--color-bg-card, #1A1A1A);
+      border: 1px solid var(--color-border, rgba(184, 145, 106, 0.2));
+      border-radius: 8px;
+      padding: 28px;
+    }
+    .chart-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 24px;
+      color: var(--color-text, #F5F0E8);
+    }
+    .chart-bar-item {
+      margin-bottom: 16px;
+    }
+    .chart-bar-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
+      color: var(--color-text-muted, #A89F91);
+    }
+    .chart-bar-track {
+      height: 8px;
+      background: rgba(184, 145, 106, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .chart-bar-fill {
+      height: 100%;
+      background: var(--color-primary, #B8916A);
+      border-radius: 4px;
+      transition: width 1s ease;
+    }
+    .chart-pie {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .pie-chart {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .pie-legend {
+      flex: 1;
+      min-width: 200px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      color: var(--color-text-muted, #A89F91);
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .loading {
+      text-align: center;
+      padding: 120px 40px;
+      color: var(--color-text-muted, #A89F91);
+    }
+    @media (max-width: 768px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 20px;
+      }
+      .charts-section {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+      .chart-pie {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header" id="header">
+    <div class="nav-inner">
+      <a href="./index.html#home" class="logo">
+        <img src="./assets/images/xusi/logo_0.jpg" alt="叙思织绣 Logo">
+        <span>叙思织绣</span>
+      </a>
+      <nav class="main-nav">
+        <a href="./index.html#home" data-i18n="nav.home">首页</a>
+        <a href="./index.html#products" data-i18n="nav.products">自营产品</a>
+        <a href="./search.html" data-i18n="nav.collections">藏品检索</a>
+        <a href="./index.html#masters" data-i18n="nav.masters">合作大师</a>
+        <a href="./index.html#events" data-i18n="nav.events">展览活动</a>
+      </nav>
+      <div class="header-actions">
+        <button class="lang-switch" data-i18n-toggle>EN</button>
+        <button class="btn-contact" onclick="openWechat()" data-i18n="nav.contact">联系咨询</button>
+      </div>
+      <button class="mobile-menu-btn" aria-label="菜单"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main class="analytics-page" id="analyticsPage">
+    <div class="loading">加载中...</div>
+  </main>
+
+  <footer class="footer" id="contact">
+    <div class="footer-main">
+      <div class="footer-bottom">
+        <p data-i18n="footer.copyright">© 2026 叙思织绣 Xu Si Zhi Xiu. 保留所有权利。</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 微信咨询弹窗 -->
+  <div class="modal" id="wechatModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeWechat()">×</button>
+      <h3>联系咨询</h3>
+      <p>请添加微信了解藏品详情、大师作品与活动报名</p>
+      <div class="wechat-qrcode">
+        <img src="./assets/images/xusi/wechat-qrcode.png" alt="微信二维码" class="qrcode-image">
+        <p>微信号：xusizhixiu</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./assets/config.js"></script>
+  <script src="./assets/main.js"></script>
+  <script src="./assets/i18n.js"></script>
+  <script>
+    const COLORS = ['#B8916A', '#D4B896', '#8C6B4A', '#A89F91', '#6B8E9B', '#9B6B7D', '#7D9B6B', '#6B7D9B'];
+
+    function escapeHtml(text) {
+      if (text == null) return '';
+      const div = document.createElement('div');
+      div.textContent = String(text);
+      return div.innerHTML;
+    }
+
+    async function loadData() {
+      try {
+        const [collectionsRes, tagsRes] = await Promise.all([
+          fetch(`${API_BASE}/collections?limit=0`),
+          fetch(`${API_BASE}/tags`)
+        ]);
+        const collectionsData = await collectionsRes.json();
+        const tagsData = await tagsRes.json();
+        return {
+          collections: collectionsData.results || [],
+          tags: tagsData
+        };
+      } catch (e) {
+        console.error('数据加载失败:', e);
+        return null;
+      }
+    }
+
+    function countByField(items, field) {
+      const counts = {};
+      items.forEach(item => {
+        const value = item[field] || '未分类';
+        counts[value] = (counts[value] || 0) + 1;
+      });
+      return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    }
+
+    function countTopTags(collections, topN = 10) {
+      const counts = {};
+      collections.forEach(item => {
+        (item.tags || []).forEach(tag => {
+          counts[tag] = (counts[tag] || 0) + 1;
+        });
+      });
+      return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, topN);
+    }
+
+    function countByEra(items) {
+      const counts = {};
+      items.forEach(item => {
+        const era = item.era || item.dynasty || '未知';
+        counts[era] = (counts[era] || 0) + 1;
+      });
+      return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 12);
+    }
+
+    function renderMetrics(total, imageCount, tagCount, appreciationCount) {
+      return `
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value">${escapeHtml(total)}</div>
+            <div class="metric-label">藏品总数</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${escapeHtml(imageCount)}</div>
+            <div class="metric-label">图片总数</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${escapeHtml(tagCount)}</div>
+            <div class="metric-label">标签数量</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">${escapeHtml(appreciationCount)}</div>
+            <div class="metric-label">已生成评鉴</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderBarChart(title, data, max) {
+      const maxValue = max || Math.max(...data.map(d => d[1]), 1);
+      const bars = data.map(([label, value]) => `
+        <div class="chart-bar-item">
+          <div class="chart-bar-label">
+            <span>${escapeHtml(label)}</span>
+            <span>${escapeHtml(value)}</span>
+          </div>
+          <div class="chart-bar-track">
+            <div class="chart-bar-fill" style="width: ${(value / maxValue * 100).toFixed(1)}%"></div>
+          </div>
+        </div>
+      `).join('');
+      return `
+        <div class="chart-card">
+          <h3>${escapeHtml(title)}</h3>
+          ${bars}
+        </div>
+      `;
+    }
+
+    function renderPieChart(title, data) {
+      const total = data.reduce((sum, d) => sum + d[1], 0) || 1;
+      let currentAngle = 0;
+      const gradientStops = data.map(([label, value], idx) => {
+        const percentage = value / total;
+        const start = currentAngle;
+        const end = currentAngle + percentage;
+        currentAngle = end;
+        return `${COLORS[idx % COLORS.length]} ${(start * 100).toFixed(2)}% ${(end * 100).toFixed(2)}%`;
+      }).join(', ');
+
+      const legend = data.map(([label, value], idx) => `
+        <div class="legend-item">
+          <div class="legend-dot" style="background: ${COLORS[idx % COLORS.length]}"></div>
+          <span>${escapeHtml(label)} (${escapeHtml(value)}, ${(value / total * 100).toFixed(1)}%)</span>
+        </div>
+      `).join('');
+
+      return `
+        <div class="chart-card">
+          <h3>${escapeHtml(title)}</h3>
+          <div class="chart-pie">
+            <div class="pie-chart" style="background: conic-gradient(${gradientStops})"></div>
+            <div class="pie-legend">${legend}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function init() {
+      const data = await loadData();
+      const container = document.getElementById('analyticsPage');
+
+      if (!data) {
+        container.innerHTML = '<div class="loading">数据加载失败，请确认搜索服务已启动</div>';
+        return;
+      }
+
+      const collections = data.collections;
+      const tags = (data.tags.tags || []).map(tag => ({
+        name: tag.name,
+        count: tag.count || 0
+      }));
+      const imageCount = collections.reduce((sum, item) => sum + (item.images ? item.images.length : 0), 0);
+      const appreciationCount = collections.filter(item => {
+        const app = item.appreciation || '';
+        return app && app !== '（待生成）' && app !== '待生成';
+      }).length;
+
+      const sourceData = countByField(collections, 'source');
+      const eraData = countByEra(collections);
+      const topTags = countTopTags(collections, 10);
+
+      container.innerHTML = `
+        <div class="analytics-header">
+          <h1>数据分析</h1>
+          <p>藏品内容建设进度与分布概览</p>
+        </div>
+        ${renderMetrics(collections.length, imageCount, tags.length, appreciationCount)}
+        <div class="charts-section">
+          ${renderPieChart('藏品来源分布', sourceData)}
+          ${renderBarChart('年代分布 Top 12', eraData)}
+          ${renderBarChart('热门标签 Top 10', topTags)}
+          ${renderBarChart('来源数量统计', sourceData)}
+        </div>
+      `;
+
+      // 触发动画
+      setTimeout(() => {
+        document.querySelectorAll('.chart-bar-fill').forEach(el => {
+          el.style.width = el.style.width;
+        });
+      }, 100);
+    }
+
+    init();
+  </script>
+</body>
+</html>

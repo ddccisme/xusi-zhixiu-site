@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>叙思织绣 - 传统织绣文化 × 前沿智能技术</title>
+  <meta name="description" content="叙思织绣独立站：融合中国织绣非遗技艺、古董藏品、当代艺术创作与自有文创品牌，提供藏品检索、AI艺术评鉴与大师合作资源。">
+  <meta property="og:title" content="叙思织绣 - 传统织绣文化 × 前沿智能技术">
+  <meta property="og:description" content="融合中国织绣非遗技艺、古董藏品、当代艺术创作与自有文创品牌。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="./assets/images/xusi/logo_0.jpg">
+  <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header" id="header">
+    <div class="nav-inner">
+      <a href="#home" class="logo">
+        <img src="./assets/images/xusi/logo_0.jpg" alt="叙思织绣 Logo">
+        <span>叙思织绣</span>
+      </a>
+      <nav class="main-nav">
+        <a href="#home" class="active">首页</a>
+        <a href="#products">自营产品</a>
+        <a href="#relics">文物展示</a>
+        <a href="./search.html">藏品检索</a>
+        <a href="#masters">合作大师</a>
+        <a href="#brands">新中式品牌</a>
+        <a href="#events">展览活动</a>
+        <a href="#partners">合作机构</a>
+      </nav>
+      <div class="header-actions">
+        <button class="lang-switch">EN / 中</button>
+        <button class="btn-contact" onclick="openWechat()">联系咨询</button>
+      </div>
+      <button class="mobile-menu-btn" aria-label="菜单">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 移动端菜单 -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home">首页</a>
+    <a href="#products">自营产品</a>
+    <a href="#relics">文物展示</a>
+    <a href="#masters">合作大师</a>
+    <a href="#brands">新中式品牌</a>
+    <a href="#events">展览活动</a>
+    <a href="#partners">合作机构</a>
+  </div>
+
+  <!-- 首页轮播 -->
+  <section class="hero" id="home">
+    <div class="carousel" id="carousel">
+      <div class="carousel-track">
+        <div class="carousel-slide active" style="background-image: url('./assets/images/17600633339375.jpg');">
+          <div class="slide-overlay"></div>
+          <div class="slide-content">
+            <p class="slide-tag">馆藏珍品</p>
+            <h2>一针一线，传承千年</h2>
+            <p class="slide-desc">汇聚中国织绣精华，让传统手工艺在当代焕发新生</p>
+          </div>
+        </div>
+        <div class="carousel-slide" style="background-image: url('./assets/images/17636982694582.jpg');">
+          <div class="slide-overlay"></div>
+          <div class="slide-content">
+            <p class="slide-tag">大师联袂</p>
+            <h2>非遗传承，匠心对话</h2>
+            <p class="slide-desc">与国家级织绣大师深度合作，呈现技艺之巅</p>
+          </div>
+        </div>
+        <div class="carousel-slide" style="background-image: url('./assets/images/17506650551390.jpg');">
+          <div class="slide-overlay"></div>
+          <div class="slide-content">
+            <p class="slide-tag">刺绣游学</p>
+            <h2>走进织绣，触摸文化</h2>
+            <p class="slide-desc">东华大学 · 丝绸博物馆 · 织绣工作室 深度研学</p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-dots">
+        <span class="dot active" data-index="0"></span>
+        <span class="dot" data-index="1"></span>
+        <span class="dot" data-index="2"></span>
+      </div>
+      <button class="carousel-prev" aria-label="上一张">‹</button>
+      <button class="carousel-next" aria-label="下一张">›</button>
+    </div>
+  </section>
+
+  <!-- 自营产品 -->
+  <section class="section products" id="products">
+    <div class="section-header">
+      <span class="section-tag">自营业务</span>
+      <h2>自营产品</h2>
+      <p>从古董藏品到当代创作，再到自有文创品牌，构建传统织绣的完整消费生态</p>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">全部</button>
+      <button class="filter-btn" data-filter="collection">自营藏品</button>
+      <button class="filter-btn" data-filter="contemporary">当代创作</button>
+      <button class="filter-btn" data-filter="brand">文创品牌</button>
+    </div>
+    <div class="product-grid">
+      <div class="product-card product-card--link" data-category="collection" data-sub="collectible-textile" data-detail="./detail-laoshucantian.html">
+        <div class="product-img">
+          <img loading="lazy" src="./assets/images/laoshucantian.jpg" alt="“老树参天”像景">
+          <span class="product-badge">重点藏品</span>
+        </div>
+        <div class="product-info">
+          <h3>“老树参天”像景</h3>
+          <p class="product-meta">自营藏品 · 收藏级织物</p>
+          <p class="product-desc">上海启文美术丝织厂织造，黑白像景织后再着色，以织物组织变化再现老树参天、湖光山色的宁静景致。</p>
+          <button class="btn-inquiry" onclick="openWechat(event)">联系咨询</button>
+        </div>
+      </div>
+      <div class="product-card" data-category="collection" data-sub="antique-embroidery">
+        <div class="product-img">
+          <img loading="lazy" src="./assets/images/17503243987865.png" alt="清代花卉刺绣挂屏">
+          <span class="product-badge">古董刺绣</span>
+        </div>
+        <div class="product-info">
+          <h3>清代花卉刺绣挂屏</h3>
+          <p class="product-meta">自营藏品 · 古董刺绣</p>
+          <p class="product-desc">清中期缎地彩绣，以牡丹、蝴蝶为主题，寓意瓜蝶绵绵、富贵吉祥，绣工精细，保存完好。</p>
+          <button class="btn-inquiry" onclick="openWechat()">联系咨询</button>
+        </div>
+      </div>
+      <div class="product-card" data-category="collection" data-sub="dealer-zone">
+        <div class="product-img">
+          <img loading="lazy" src="./assets/images/17503264665122.png" alt="名家古董商专区">
+          <span class="product-badge">合作商</span>
+        </div>
+        <div class="product-info">
+          <h3>名家古董商专区</h3>
+          <p class="product-meta">自营藏品 · 北京 / 上海合作商</p>
+          <p class="product-desc">携手北京、上海两地知名古董商，严选明清织绣珍品，来源清晰，品质保真。</p>
+          <button class="btn-inquiry" onclick="openWechat()">联系咨询</button>
+        </div>
+      </div>
+      <div class="product-card" data-category="collection" data-sub="collectible-textile">
+        <div class="product-img">
+          <img loading="lazy" src="./assets/images/17503243658309.png" alt="清代缂丝扇套">
+          <span class="product-badge">收藏级织物</span>
+        </div>
+        <div class="product-info">
+          <h3>清代缂丝扇套</h3>
+          <p class="product-meta">自营藏品 · 收藏级织物</p>
+          <p class="product-desc">一寸缂丝一寸金，此扇套织工细腻，纹样清雅，为文人雅士之物，兼具收藏与赏玩价值。</p>
+          <button class="btn-inquiry" onclick="openWechat()">联系咨询</button>
+        </div>
+      </div>
+      <div class="product-card" data-category="contemporary" data-sub="artist-collab">
+        <div class="product-img">
+          <img loading="lazy" src="./assets/images/17503243763754.png" alt="艺术家联名刺绣">
+          <span class="product-badge">艺术家合作</span>
+        </div>
+        <div class="product-info">
+          <h3>艺术家联名刺绣</h3>
+          <p class="product-meta">当代创作 · 艺术家合作</p>
+          <p class="product-desc">邀请当代艺术家以传统刺绣为媒介创作，让非遗技艺与当代设计语言产生对话。</p>
+          <button class="btn-inquiry" onclick="openWechat()">联系咨询</button>
+        </div>
+      </div>
+      <div class="product-card" data-category="contemporary" data-sub="cultural-creation">
+        <div class="product-img">
+          <img loading="lazy" src="./assets/images/17503243892351.png" alt="民族文化主题创作">
+          <span class="product-badge">文化创作</span>
+        </div>
+        <div class="product-info">
+          <h3>民族文化主题创作</h3>
+          <p class="product-meta">当代创作 · 文化创作</p>
+          <p class="product-desc">以苗绣、蜀绣等民族织绣为灵感，进行当代转化与再创作，传递文化记忆。</p>
+          <button class="btn-inquiry" onclick="openWechat()">联系咨询</button>
+        </div>
+      </div>
+      <div class="product-card" data-category="contemporary" data-sub="exhibition">
+        <div class="product-img">
+          <img loading="lazy" src="./assets/images/17636982694582.jpg" alt="展览限定刺绣作品">
+          <span class="product-badge">展览 / 活动</span>
+        </div>
+        <div class="product-info">
+          <h3>展览限定刺绣作品</h3>
+          <p class="product-meta">当代创作 · 展览 / 活动</p>
+          <p class="product-desc">配合主题展览推出的限定作品，每件均附带展览溯源与收藏证书。</p>
+          <button class="btn-inquiry" onclick="openWechat()">联系咨询</button>
+        </div>
+      </div>
+      <div class="product-card" data-category="brand" data-sub="apparel">
+        <div class="product-img">
+          <img loading="lazy" src="./assets/images/17600633339375.jpg" alt="新中式服饰系列">
+          <span class="product-badge">待设计</span>
+        </div>
+        <div class="product-info">
+          <h3>新中式服饰系列</h3>
+          <p class="product-meta">文创品牌 · 服饰系列</p>
+          <p class="product-desc">自有品牌服饰线，供应链已就绪，待融入传统纹样与现代设计语言后上线。</p>
+          <button class="btn-inquiry" onclick="openWechat()">联系咨询</button>
+        </div>
+      </div>
+      <div class="product-card" data-category="brand" data-sub="peripheral">
+        <div class="product-img">
+          <img loading="lazy" src="./assets/images/175021583686.png" alt="手工刺绣蝴蝶胸针">
+          <span class="product-badge">优先上线</span>
+        </div>
+        <div class="product-info">
+          <h3>手工刺绣蝴蝶胸针</h3>
+          <p class="product-meta">文创品牌 · 文创周边</p>
+          <p class="product-desc">取品牌Logo「瓜蝶绵绵」意象，以传统打籽绣工艺制成，时尚百搭，优先上线。</p>
+          <button class="btn-inquiry" onclick="openWechat()">联系咨询</button>
+        </div>
+      </div>
+    </div>
+    <div class="section-more">
+      <a href="#" class="btn-more" onclick="openWechat(); return false;">查看更多自营产品</a>
+    </div>
+  </section>
+
+  <!-- 文物展示 -->
+  <section class="section relics" id="relics">
+    <div class="section-header light">
+      <span class="section-tag">数字纹样库</span>
+      <h2>文物展示</h2>
+      <p>参考中国丝绸博物馆藏品分类，按来源、类型、年代多维检索，溯源可考，分类可览</p>
+    </div>
+    <div class="relics-filter">
+      <div class="filter-group" id="sourceFilterGroup">
+        <span class="filter-label">来源：</span>
+        <button class="relic-filter active" data-source="all">全部</button>
+        <button class="relic-filter" data-source="ancient">中国历代</button>
+        <button class="relic-filter" data-source="contemporary">中国当代</button>
+        <button class="relic-filter" data-source="western">西方</button>
+        <button class="relic-filter" data-source="ethnology">民族学</button>
+        <button class="relic-filter" data-source="other">其他</button>
+      </div>
+      <div class="filter-group" id="typeFilterGroup">
+        <span class="filter-label">类型：</span>
+      </div>
+      <div class="filter-group" id="eraFilterGroup">
+        <span class="filter-label">年代：</span>
+      </div>
+    </div>
+    <div class="relics-grid">
+      <div class="relic-item" data-source="ancient" data-type="织物" data-era="清代">
+        <div class="relic-img">
+          <img loading="lazy" src="./assets/images/17496344464247.png" alt="花卉纹样">
+        </div>
+        <div class="relic-info">
+          <h4>花卉纹样</h4>
+          <p>中国历代 · 织物 · 清代</p>
+          <span class="relic-source">来源：中国丝绸博物馆</span>
+        </div>
+      </div>
+      <div class="relic-item" data-source="ancient" data-type="织物" data-era="民国">
+        <div class="relic-img">
+          <img loading="lazy" src="./assets/images/17496344762787.png" alt="几何连续纹">
+        </div>
+        <div class="relic-info">
+          <h4>几何连续纹</h4>
+          <p>中国历代 · 织物 · 民国</p>
+          <span class="relic-source">来源：中国丝绸博物馆</span>
+        </div>
+      </div>
+      <div class="relic-item" data-source="ethnology" data-type="织物" data-era="清代">
+        <div class="relic-img">
+          <img loading="lazy" src="./assets/images/17496344985160.png" alt="民族刺绣纹样">
+        </div>
+        <div class="relic-info">
+          <h4>民族刺绣纹样</h4>
+          <p>民族学 · 织物 · 清代</p>
+          <span class="relic-source">来源：中国丝绸博物馆</span>
+        </div>
+      </div>
+      <div class="relic-item" data-source="ancient" data-type="工艺品" data-era="明代">
+        <div class="relic-img">
+          <img loading="lazy" src="./assets/images/17496345214020.png" alt="缠枝莲纹">
+        </div>
+        <div class="relic-info">
+          <h4>缠枝莲纹</h4>
+          <p>中国历代 · 工艺品 · 明代</p>
+          <span class="relic-source">来源：中国丝绸博物馆</span>
+        </div>
+      </div>
+      <div class="relic-item" data-source="ancient" data-type="工艺品" data-era="民国">
+        <div class="relic-img">
+          <img loading="lazy" src="./assets/images/17496345565938.png" alt="如意云纹">
+        </div>
+        <div class="relic-info">
+          <h4>如意云纹</h4>
+          <p>中国历代 · 工艺品 · 民国</p>
+          <span class="relic-source">来源：中国丝绸博物馆</span>
+        </div>
+      </div>
+      <div class="relic-item" data-source="contemporary" data-type="面料" data-era="当代">
+        <div class="relic-img">
+          <img loading="lazy" src="./assets/images/17496344464822.gif" alt="龙纹织锦">
+        </div>
+        <div class="relic-info">
+          <h4>龙纹织锦</h4>
+          <p>中国当代 · 面料 · 当代</p>
+          <span class="relic-source">来源：中国丝绸博物馆</span>
+        </div>
+      </div>
+      <div class="relic-item" data-source="ethnology" data-type="服装" data-era="明代">
+        <div class="relic-img">
+          <img loading="lazy" src="./assets/images/17506642208916.jpg" alt="节庆纹样">
+        </div>
+        <div class="relic-info">
+          <h4>节庆纹样</h4>
+          <p>民族学 · 服装 · 明代</p>
+          <span class="relic-source">来源：中国丝绸博物馆</span>
+        </div>
+      </div>
+      <div class="relic-item" data-source="western" data-type="织物" data-era="19世纪">
+        <div class="relic-img">
+          <img loading="lazy" src="./assets/images/17506645597215.jpg" alt="花鸟纹">
+        </div>
+        <div class="relic-info">
+          <h4>花鸟纹</h4>
+          <p>西方 · 织物 · 19世纪</p>
+          <span class="relic-source">来源：中国丝绸博物馆</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 合作大师 -->
+  <section class="section masters" id="masters">
+    <div class="section-header">
+      <span class="section-tag">非遗力量</span>
+      <h2>合作大师</h2>
+      <p>与国家级非遗传承人深度合作，让传统技艺经由大师之手走向当代生活</p>
+    </div>
+    <div class="masters-grid">
+      <div class="master-card">
+        <div class="master-avatar">
+          <img loading="lazy" src="./assets/images/xusi/logo_0.jpg" alt="大师头像">
+        </div>
+        <h3>云锦国家级大师</h3>
+        <p class="master-title">南京云锦研究所</p>
+        <p class="master-desc">从事云锦技艺传承四十余年，作品被多家国家级博物馆收藏，擅长龙纹、花卉题材织锦创作。</p>
+        <button class="btn-inquiry" onclick="openWechat()">预约鉴赏</button>
+      </div>
+      <div class="master-card">
+        <div class="master-avatar">
+          <img loading="lazy" src="./assets/images/xusi/logo_0.jpg" alt="大师头像">
+        </div>
+        <h3>苏绣代表性传承人</h3>
+        <p class="master-title">苏州刺绣研究所</p>
+        <p class="master-desc">精研细平绣、乱针绣等技法，作品多次获国家级工艺美术大奖，致力于苏绣年轻化表达。</p>
+        <button class="btn-inquiry" onclick="openWechat()">预约鉴赏</button>
+      </div>
+      <div class="master-card">
+        <div class="master-avatar">
+          <img loading="lazy" src="./assets/images/xusi/logo_0.jpg" alt="大师头像">
+        </div>
+        <h3>苗绣非遗传承人</h3>
+        <p class="master-title">黔东南刺绣工作室</p>
+        <p class="master-desc">深耕苗族传统刺绣纹样，将民族图腾与现代设计语言融合，推动苗绣走进国际舞台。</p>
+        <button class="btn-inquiry" onclick="openWechat()">预约鉴赏</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 新中式品牌 -->
+  <section class="section brands" id="brands">
+    <div class="section-header light">
+      <span class="section-tag">跨界联名</span>
+      <h2>新中式品牌合作</h2>
+      <p>携手设计师品牌、潮牌与明星资源，让传统纹样成为当代时尚语言</p>
+    </div>
+    <div class="brands-grid">
+      <div class="brand-card">
+        <div class="brand-img" style="background-image: url('./assets/images/17519589383301.jpg');"></div>
+        <div class="brand-info">
+          <h3>香港设计师品牌联名</h3>
+          <p>以传统西湖纹样为灵感，共同开发新中式服饰系列，融合东方美学与国际剪裁。</p>
+        </div>
+      </div>
+      <div class="brand-card">
+        <div class="brand-img" style="background-image: url('./assets/images/17506650551390.jpg');"></div>
+        <div class="brand-info">
+          <h3>纹藏设计大赛</h3>
+          <p>联合发起国际纹样设计大赛，吸引全球设计师以中国传统纹样为源进行再创。</p>
+        </div>
+      </div>
+      <div class="brand-card">
+        <div class="brand-img" style="background-image: url('./assets/images/17636982694582.jpg');"></div>
+        <div class="brand-info">
+          <h3>明星潮牌合作</h3>
+          <p>将织绣元素融入潮流单品，借助明星影响力推广中国传统手工艺文化。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 展览活动 -->
+  <section class="section events" id="events">
+    <div class="section-header">
+      <span class="section-tag">文化体验</span>
+      <h2>展览活动</h2>
+      <p>线下展览、刺绣游学、大师工作坊，让传统织绣触手可及</p>
+    </div>
+    <div class="events-list">
+      <div class="event-card">
+        <div class="event-date">
+          <span class="event-month">06月</span>
+          <span class="event-day">15</span>
+        </div>
+        <div class="event-img" style="background-image: url('./assets/images/17506642208916.jpg');"></div>
+        <div class="event-info">
+          <span class="event-tag">刺绣游学</span>
+          <h3>东华大学 × 丝绸博物馆 一日研学</h3>
+          <p>参观东华大学纺织学院、中国丝绸博物馆，了解织绣历史与工艺，亲手体验基础刺绣技法。</p>
+          <button class="btn-inquiry" onclick="openWechat()">报名参加</button>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-date">
+          <span class="event-month">07月</span>
+          <span class="event-day">22</span>
+        </div>
+        <div class="event-img" style="background-image: url('./assets/images/17600633411339.jpg');"></div>
+        <div class="event-info">
+          <span class="event-tag">大师工作坊</span>
+          <h3>云锦技艺体验课</h3>
+          <p>特邀云锦大师现场演示织机操作，学员可亲手体验挑花结本，感受寸锦寸金的匠心。</p>
+          <button class="btn-inquiry" onclick="openWechat()">报名参加</button>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-date">
+          <span class="event-month">08月</span>
+          <span class="event-day">08</span>
+        </div>
+        <div class="event-img" style="background-image: url('./assets/images/17519589383301.jpg');"></div>
+        <div class="event-info">
+          <span class="event-tag">主题展览</span>
+          <h3>「瓜蝶绵绵」传统织绣艺术展</h3>
+          <p>精选明清织绣珍品与当代大师作品，围绕吉祥纹样主题，呈现织绣文化的传承与创新。</p>
+          <button class="btn-inquiry" onclick="openWechat()">预约观展</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 合作机构 -->
+  <section class="section partners" id="partners">
+    <div class="section-header">
+      <span class="section-tag">信任背书</span>
+      <h2>合作机构</h2>
+      <p>携手高校、博物馆、非遗机构与海外资源，共建织绣文化传承生态</p>
+    </div>
+    <div class="partners-tabs">
+      <button class="partner-tab active" data-tab="domestic">国内机构</button>
+      <button class="partner-tab" data-tab="international">海外机构</button>
+    </div>
+    <div class="partners-content">
+      <div class="partners-panel active" id="domestic">
+        <div class="partner-item">
+          <div class="partner-icon">东</div>
+          <div class="partner-info">
+            <h4>东华大学</h4>
+            <p>纺织科学与工程学科支持，联合开展织绣技艺研究与人才培育。</p>
+          </div>
+        </div>
+        <div class="partner-item">
+          <div class="partner-icon">丝</div>
+          <div class="partner-info">
+            <h4>中国丝绸博物馆</h4>
+            <p>核心纹样数据源，提供展览资源与学术支持。</p>
+          </div>
+        </div>
+        <div class="partner-item">
+          <div class="partner-icon">锦</div>
+          <div class="partner-info">
+            <h4>南京云锦博物馆</h4>
+            <p>国家级云锦大师资源对接，高端作品代售合作。</p>
+          </div>
+        </div>
+        <div class="partner-item">
+          <div class="partner-icon">绣</div>
+          <div class="partner-info">
+            <h4>多地刺绣工作室</h4>
+            <p>苏绣、苗绣、蜀绣等传统技艺工作室联盟。</p>
+          </div>
+        </div>
+      </div>
+      <div class="partners-panel" id="international">
+        <div class="partner-item">
+          <div class="partner-icon">V</div>
+          <div class="partner-info">
+            <h4>英国 V&A 博物馆</h4>
+            <p>国际纹样资源参考与文创定价策略研究合作。</p>
+          </div>
+        </div>
+        <div class="partner-item">
+          <div class="partner-icon">M</div>
+          <div class="partner-info">
+            <h4>美国大都会艺术博物馆</h4>
+            <p>公开藏品资源参考，推动中国织绣文化国际传播。</p>
+          </div>
+        </div>
+        <div class="partner-item">
+          <div class="partner-icon">港</div>
+          <div class="partner-info">
+            <h4>香港设计师品牌联盟</h4>
+            <p>新中式品牌跨界合作与海外市场拓展资源。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 品牌理念 / 页脚 -->
+  <footer class="footer" id="contact">
+    <div class="footer-philosophy">
+      <div class="philosophy-inner">
+        <img loading="lazy" src="./assets/images/xusi/logo_0.jpg" alt="叙思织绣 Logo" class="philosophy-logo">
+        <h2>让传统的事情在当下的土壤当中重新生长起来</h2>
+        <p>叙思织绣以「瓜蝶绵绵」为品牌符号，致力于将传统织绣文化带入当代生活。<br>我们相信，技术与人文结合，才能做出有温度的好东西。</p>
+        <div class="philosophy-slogan">"传统文化手工艺，在AI时代新土壤中长出新枝芽。"</div>
+      </div>
+    </div>
+    <div class="footer-main">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img loading="lazy" src="./assets/images/xusi/logo_0.jpg" alt="叙思织绣">
+            <span>叙思织绣</span>
+          </div>
+          <p>传统织绣文化 × 前沿智能技术</p>
+          <div class="footer-contact">
+            <p>商务合作 / 藏品咨询 / 活动报名</p>
+            <button class="btn-wechat" onclick="openWechat()">添加微信咨询</button>
+          </div>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>浏览</h4>
+            <a href="#home">首页</a>
+            <a href="#products">自营产品</a>
+            <a href="#relics">文物展示</a>
+            <a href="#masters">合作大师</a>
+          </div>
+          <div class="footer-col">
+            <h4>合作</h4>
+            <a href="#brands">新中式品牌</a>
+            <a href="#events">展览活动</a>
+            <a href="#partners">合作机构</a>
+            <a href="#" onclick="openWechat(); return false;">联系咨询</a>
+          </div>
+          <div class="footer-col">
+            <h4>关注</h4>
+            <a href="#">微信公众号</a>
+            <a href="#">小红书</a>
+            <a href="#">抖音</a>
+            <a href="#">Instagram</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 叙思织绣 Xu Si Zhi Xiu. 保留所有权利。</p>
+        <p>本站文物图片仅作文化展示使用，数据来源已标注原始出处。</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 微信咨询弹窗 -->
+  <div class="modal" id="wechatModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeWechat()">×</button>
+      <h3>联系咨询</h3>
+      <p>请添加微信了解藏品详情、大师作品与活动报名</p>
+      <div class="wechat-qrcode">
+        <img src="./assets/images/xusi/wechat-qrcode.png" alt="微信二维码" class="qrcode-image">
+        <p>微信号：xusizhixiu</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./assets/main.js"></script>
+  <script src="./assets/i18n.js"></script>
+</body>
+</html>

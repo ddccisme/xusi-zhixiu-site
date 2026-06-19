@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>藏品检索 - 叙思织绣</title>
+  <meta name="description" content="在叙思织绣藏品库中通过语义搜索、名称搜索、标签筛选或以图搜图，探索2124件中国历代与当代织绣藏品。">
+  <meta property="og:title" content="藏品检索 - 叙思织绣">
+  <meta property="og:description" content="语义搜索、标签筛选、以图搜图，探索2124件织绣藏品。">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="./assets/style.css">
+  <style>
+    .search-page {
+      padding-top: 120px;
+      min-height: 100vh;
+    }
+    .search-header {
+      text-align: center;
+      padding: 40px 40px 32px;
+      background: var(--color-bg-light, #141414);
+    }
+    .search-header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+    }
+    .search-header p {
+      color: var(--color-text-muted, #A89F91);
+      max-width: 600px;
+      margin: 0 auto 24px;
+      font-size: 0.95rem;
+    }
+    .search-box {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 280px;
+      padding: 14px 20px;
+      border: 1px solid var(--color-border, rgba(184, 145, 106, 0.2));
+      background: var(--color-bg-card, #1A1A1A);
+      color: var(--color-text, #F5F0E8);
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    .search-input::placeholder {
+      color: var(--color-text-muted, #A89F91);
+    }
+    .search-btn {
+      padding: 14px 32px;
+      background: var(--color-primary-light, #D4B896);
+      color: #0C0C0C;
+      border: 2px solid var(--color-primary-light, #D4B896);
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s;
+      box-shadow: 0 2px 12px rgba(212, 184, 150, 0.25);
+    }
+    .search-btn:hover {
+      background: var(--color-text, #F5F0E8);
+      border-color: var(--color-text, #F5F0E8);
+      box-shadow: 0 4px 20px rgba(212, 184, 150, 0.4);
+    }
+    .search-tabs {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+    .search-tab {
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid var(--color-border, rgba(184, 145, 106, 0.2));
+      color: var(--color-text-muted, #A89F91);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .search-tab.active,
+    .search-tab:hover {
+      border-color: var(--color-primary, #B8916A);
+      color: var(--color-primary, #B8916A);
+      background: rgba(184, 145, 106, 0.08);
+    }
+    .search-image-upload {
+      margin-top: 20px;
+    }
+    .search-image-upload input {
+      display: none;
+    }
+    .upload-label {
+      display: inline-block;
+      padding: 12px 24px;
+      border: 1px dashed var(--color-border, rgba(184, 145, 106, 0.2));
+      color: var(--color-text-muted, #A89F91);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .upload-label:hover {
+      border-color: var(--color-primary, #B8916A);
+      color: var(--color-primary, #B8916A);
+      background: rgba(184, 145, 106, 0.08);
+    }
+    .upload-preview {
+      margin-top: 16px;
+      max-width: 200px;
+      border-radius: 4px;
+    }
+    .tag-cloud {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 0 40px;
+      text-align: center;
+    }
+    .tag-cloud h3 {
+      margin-bottom: 12px;
+      color: var(--color-text-muted, #A89F91);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .tag-reset {
+      font-size: 0.75rem;
+      color: var(--color-primary, #B8916A);
+      cursor: pointer;
+      text-decoration: underline;
+      opacity: 0.8;
+    }
+    .tag-reset:hover {
+      opacity: 1;
+    }
+    .tag-item {
+      display: inline-block;
+      padding: 6px 12px;
+      margin: 4px;
+      background: var(--color-bg-card, #1A1A1A);
+      border: 1px solid var(--color-border, rgba(184, 145, 106, 0.2));
+      border-radius: 4px;
+      color: var(--color-text-muted, #A89F91);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .tag-item:hover,
+    .tag-item.active {
+      border-color: var(--color-primary, #B8916A);
+      color: var(--color-primary, #B8916A);
+      background: rgba(184, 145, 106, 0.08);
+    }
+    .tag-item.recommended {
+      background: rgba(184, 145, 106, 0.12);
+      border-color: var(--color-primary, #B8916A);
+      color: var(--color-text, #F5F0E8);
+    }
+    .tag-item.recommended:hover {
+      background: rgba(184, 145, 106, 0.2);
+    }
+    .tag-count {
+      font-size: 0.7rem;
+      color: var(--color-text-muted, #A89F91);
+      margin-left: 4px;
+    }
+    .results-section {
+      padding: 32px 40px 60px;
+      max-width: 1400px;
+      margin: 0 auto;
+      scroll-margin-top: 100px;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .results-header h2 {
+      font-size: 1.5rem;
+    }
+    .results-count {
+      color: var(--text-muted);
+    }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 32px;
+    }
+    .result-card {
+      background: var(--color-bg-card, #1A1A1A);
+      border: 1px solid var(--color-border, rgba(184, 145, 106, 0.2));
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .result-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-primary, #B8916A);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+    .result-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: var(--secondary-bg);
+    }
+    .result-info {
+      padding: 20px;
+    }
+    .result-info h3 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    .result-meta {
+      color: var(--color-text-muted, #A89F91);
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
+    .result-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .result-tag {
+      padding: 3px 8px;
+      background: rgba(184, 145, 106, 0.1);
+      color: var(--accent);
+      border-radius: 3px;
+      font-size: 0.75rem;
+    }
+    .result-score {
+      color: var(--color-primary, #B8916A);
+      font-size: 0.8rem;
+    }
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: var(--color-text-muted, #A89F91);
+    }
+    .empty {
+      text-align: center;
+      padding: 60px 40px;
+      color: var(--color-text-muted, #A89F91);
+    }
+    .search-status {
+      text-align: center;
+      padding: 16px;
+      margin: 0 auto 16px;
+      max-width: 700px;
+      background: rgba(184, 145, 106, 0.08);
+      border: 1px solid var(--color-border, rgba(184, 145, 106, 0.2));
+      border-radius: 4px;
+      color: var(--color-text-muted, #A89F91);
+      font-size: 0.9rem;
+    }
+    @media (max-width: 768px) {
+      .search-header {
+        padding: 40px 20px;
+      }
+      .search-header h1 {
+        font-size: 1.8rem;
+      }
+      .results-section {
+        padding: 40px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header scrolled" id="header">
+    <div class="nav-inner">
+      <a href="./index.html#home" class="logo">
+        <img src="./assets/images/xusi/logo_0.jpg" alt="叙思织绣 Logo">
+        <span>叙思织绣</span>
+      </a>
+      <nav class="main-nav">
+        <a href="./index.html#home" data-i18n="nav.home">首页</a>
+        <a href="./index.html#products" data-i18n="nav.products">自营产品</a>
+        <a href="./search.html" class="active" data-i18n="nav.collections">藏品检索</a>
+        <a href="./index.html#masters" data-i18n="nav.masters">合作大师</a>
+        <a href="./index.html#events" data-i18n="nav.events">展览活动</a>
+      </nav>
+      <div class="header-actions">
+        <button class="lang-switch" data-i18n-toggle>EN</button>
+        <button class="btn-contact" onclick="openWechat()" data-i18n="nav.contact">联系咨询</button>
+      </div>
+      <button class="mobile-menu-btn" aria-label="菜单"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main class="search-page">
+    <section class="search-header">
+      <h1 data-i18n="search.title">藏品检索</h1>
+      <p data-i18n="search.subtitle">支持语义搜索、名称搜索、标签筛选与以图搜图，探索 2000+ 件织绣藏品</p>
+      <div class="search-box">
+        <input type="text" class="search-input" id="searchInput" placeholder="输入关键词：如 清代 刺绣 花卉" data-i18n-placeholder="search.placeholder">
+        <button class="search-btn" onclick="performSearch()" data-i18n="search.button">搜索</button>
+      </div>
+      <div class="search-tabs">
+        <button class="search-tab active" data-mode="text" onclick="setMode('text')" data-i18n="search.semantic">语义搜索</button>
+        <button class="search-tab" data-mode="name" onclick="setMode('name')" data-i18n="search.name">名称搜索</button>
+        <button class="search-tab" data-mode="image" onclick="setMode('image')" data-i18n="search.image">以图搜图</button>
+      </div>
+      <div class="search-image-upload" id="imageUpload" style="display: none;">
+        <label class="upload-label" for="imageInput" data-i18n="search.uploadImage">📷 上传图片</label>
+        <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+        <img id="uploadPreview" class="upload-preview" style="display: none;">
+      </div>
+    </section>
+
+    <section class="tag-cloud" id="tagCloud">
+      <h3 id="tagCloudTitle">
+        <span data-i18n="search.popularTags">热门标签</span>
+      </h3>
+      <div id="tagList">
+        <span class="loading" data-i18n="common.loading">加载中...</span>
+      </div>
+    </section>
+
+    <section class="results-section" id="resultsSection">
+      <div id="searchStatus"></div>
+      <div class="results-header">
+        <h2 data-i18n="search.resultsTitle">搜索结果</h2>
+        <span class="results-count" id="resultsCount" data-i18n="search.resultsCount">请输入关键词或选择标签</span>
+      </div>
+      <div class="results-grid" id="resultsGrid">
+        <div class="empty" data-i18n="search.empty">输入关键词、选择标签或上传图片开始探索藏品</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer" id="contact">
+    <div class="footer-main">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="./assets/images/xusi/logo_0.jpg" alt="叙思织绣">
+            <span>叙思织绣</span>
+          </div>
+          <p>传统织绣文化 × 前沿智能技术</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 叙思织绣 Xu Si Zhi Xiu. 保留所有权利。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./assets/config.js"></script>
+  <script>
+    let currentMode = 'text';
+    let selectedTags = [];
+    let currentFile = null;
+    let popularTags = [];
+    let tagWeights = null;
+    let lastSearchResults = [];
+    let lastQueryLabel = '';
+
+    function getParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    // 初始化：加载标签
+    async function loadTags() {
+      try {
+        const res = await fetch(`${API_BASE}/tags`);
+        const data = await res.json();
+        popularTags = data.tags.slice(0, 40);
+        renderTagCloud(popularTags, 'popular');
+      } catch (e) {
+        const tagList = document.getElementById('tagList');
+        tagList.innerHTML = '';
+        const span = document.createElement('span');
+        span.className = 'tag-item';
+        span.textContent = '标签加载失败';
+        tagList.appendChild(span);
+      }
+    }
+
+    // 加载标签权重数据（用于推荐标签加权）
+    async function loadTagWeights() {
+      try {
+        const res = await fetch('./data/tag_weights.json');
+        if (!res.ok) throw new Error('加载失败');
+        tagWeights = await res.json();
+      } catch (e) {
+        console.warn('标签权重加载失败，使用简单频率推荐', e);
+        tagWeights = null;
+      }
+    }
+
+    function escapeHtml(text) {
+      if (text == null) return '';
+      const div = document.createElement('div');
+      div.textContent = String(text);
+      return div.innerHTML;
+    }
+
+    function renderTagCloud(tags, mode, withCounts) {
+      const tagList = document.getElementById('tagList');
+      const title = document.getElementById('tagCloudTitle');
+
+      title.innerHTML = '';
+      const titleSpan = document.createElement('span');
+      titleSpan.textContent = mode === 'popular'
+        ? (typeof I18N !== 'undefined' ? I18N.get('search.popularTags', '热门标签') : '热门标签')
+        : (typeof I18N !== 'undefined' ? I18N.get('search.recommendedTags', '推荐标签') : '推荐标签');
+      title.appendChild(titleSpan);
+      if (mode !== 'popular') {
+        const reset = document.createElement('span');
+        reset.className = 'tag-reset';
+        reset.textContent = typeof I18N !== 'undefined' ? I18N.get('search.resetTags', '返回热门标签') : '返回热门标签';
+        reset.addEventListener('click', resetToPopularTags);
+        title.appendChild(reset);
+      }
+
+      tagList.innerHTML = '';
+      tags.forEach(tag => {
+        const name = typeof tag === 'string' ? tag : tag.name;
+        const count = withCounts && typeof tag === 'object' && tag.count ? tag.count : null;
+        const span = document.createElement('span');
+        span.className = mode === 'recommended' ? 'tag-item recommended' : 'tag-item';
+        if (selectedTags.includes(name)) span.classList.add('active');
+        span.textContent = name;
+        if (count !== null) {
+          const countSpan = document.createElement('span');
+          countSpan.className = 'tag-count';
+          countSpan.textContent = count;
+          span.appendChild(countSpan);
+        }
+        span.addEventListener('click', () => toggleTag(name, span));
+        tagList.appendChild(span);
+      });
+    }
+
+    function resetToPopularTags() {
+      selectedTags = [];
+      renderTagCloud(popularTags, 'popular');
+      document.getElementById('resultsGrid').innerHTML = `<div class="empty">${typeof I18N !== 'undefined' ? I18N.get('search.empty', '输入关键词、选择标签或上传图片开始探索藏品') : '输入关键词、选择标签或上传图片开始探索藏品'}</div>`;
+      document.getElementById('resultsCount').textContent = typeof I18N !== 'undefined' ? I18N.get('search.resultsCount', '请输入关键词或选择标签') : '请输入关键词或选择标签';
+      clearStatus();
+    }
+
+    function scoreTag(name, count) {
+      if (!tagWeights) return count;
+
+      const idf = tagWeights.idf[name] || 1.0;
+      let coocBoost = 0;
+
+      // 计算与已选标签的共现增强
+      if (selectedTags.length > 0) {
+        const cooc = tagWeights.cooccurrence[name] || {};
+        let totalCooc = 0;
+        let pairs = 0;
+        selectedTags.forEach(selected => {
+          if (cooc[selected]) {
+            totalCooc += cooc[selected];
+            pairs += 1;
+          }
+        });
+        if (pairs > 0) {
+          coocBoost = totalCooc / pairs;
+        }
+      }
+
+      // 综合得分：频率 * IDF * (1 + 共现增强/10)
+      return count * idf * (1 + coocBoost / 10);
+    }
+
+    function updateRecommendedTags(results) {
+      if (!results || results.length === 0) {
+        return;
+      }
+
+      // 统计结果中标签出现频率
+      const tagCounts = {};
+      results.forEach(item => {
+        const tags = item.tags || [];
+        tags.forEach(tag => {
+          tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        });
+      });
+
+      // 按加权得分排序，排除当前已选标签
+      const sortedTags = Object.entries(tagCounts)
+        .filter(([name]) => !selectedTags.includes(name))
+        .map(([name, count]) => ({ name, count, score: scoreTag(name, count) }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 30)
+        .map(({ name, count }) => ({ name, count }));
+
+      if (sortedTags.length > 0) {
+        renderTagCloud(sortedTags, 'recommended', true);
+      }
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`.search-tab[data-mode="${mode}"]`).classList.add('active');
+
+      const imageUpload = document.getElementById('imageUpload');
+      const searchInput = document.getElementById('searchInput');
+
+      if (mode === 'image') {
+        imageUpload.style.display = 'block';
+        searchInput.style.display = 'none';
+      } else {
+        imageUpload.style.display = 'none';
+        searchInput.style.display = 'block';
+        searchInput.placeholder = mode === 'text'
+          ? (typeof I18N !== 'undefined' ? I18N.get('search.placeholderSemantic', '输入关键词：如 清代 刺绣 花卉') : '输入关键词：如 清代 刺绣 花卉')
+          : (typeof I18N !== 'undefined' ? I18N.get('search.placeholderName', '输入藏品名称') : '输入藏品名称');
+      }
+    }
+
+    function toggleTag(tag, el) {
+      if (selectedTags.includes(tag)) {
+        selectedTags = selectedTags.filter(t => t !== tag);
+        el.classList.remove('active');
+      } else {
+        selectedTags.push(tag);
+        el.classList.add('active');
+      }
+      performTagSearch();
+    }
+
+    function isTagSearchActive() {
+      return selectedTags.length > 0;
+    }
+
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      currentFile = file;
+      const preview = document.getElementById('uploadPreview');
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = 'block';
+      performImageSearch(file);
+    }
+
+    async function performSearch() {
+      const q = document.getElementById('searchInput').value.trim();
+      if (!q) return;
+
+      const endpoint = currentMode === 'name' ? 'name' : 'text';
+      showLoading();
+      setStatus(typeof I18N !== 'undefined'
+        ? (currentMode === 'name' ? I18N.get('search.searchingName', '正在名称搜索...') : I18N.get('search.searchingSemantic', '正在语义搜索...'))
+        : '正在搜索...');
+      try {
+        const res = await fetch(`${API_BASE}/search/${endpoint}?q=${encodeURIComponent(q)}&top_k=24`);
+        const data = await res.json();
+        const label = `“${q}” ${typeof I18N !== 'undefined' ? I18N.get('search.resultsFor', '结果') : '结果'}`;
+        renderResults(data.results, label);
+        updateRecommendedTags(data.results);
+      } catch (e) {
+        showError(typeof I18N !== 'undefined' ? I18N.get('search.searchFailed', '搜索失败，请确认搜索服务已启动') : '搜索失败，请确认搜索服务已启动');
+        clearStatus();
+      }
+    }
+
+    async function performTagSearch() {
+      if (selectedTags.length === 0) {
+        document.getElementById('resultsGrid').innerHTML = `<div class="empty">${typeof I18N !== 'undefined' ? I18N.get('search.selectTags', '请选择标签开始探索') : '请选择标签开始探索'}</div>`;
+        document.getElementById('resultsCount').textContent = '';
+        clearStatus();
+        return;
+      }
+      showLoading();
+      setStatus(typeof I18N !== 'undefined' ? I18N.get('search.filteringTags', '正在筛选标签...') : '正在筛选标签...');
+      try {
+        const tags = selectedTags.join(',');
+        const res = await fetch(`${API_BASE}/search/tags?tags=${encodeURIComponent(tags)}&top_k=24`);
+        const data = await res.json();
+        const label = `${typeof I18N !== 'undefined' ? I18N.get('search.tagResults', '标签') : '标签'}：${selectedTags.join('、')}`;
+        renderResults(data.results, label);
+        updateRecommendedTags(data.results);
+      } catch (e) {
+        showError(typeof I18N !== 'undefined' ? I18N.get('search.tagSearchFailed', '标签搜索失败') : '标签搜索失败');
+        clearStatus();
+      }
+    }
+
+    async function performImageSearch(file) {
+      showLoading();
+      setStatus(typeof I18N !== 'undefined' ? I18N.get('search.analyzingImage', '正在分析图片...') : '正在分析图片...');
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const res = await fetch(`${API_BASE}/search/image?top_k=24`, {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        const label = typeof I18N !== 'undefined' ? I18N.get('search.imageResults', '上传的图片') : '上传的图片';
+        renderResults(data.results, label);
+        updateRecommendedTags(data.results);
+      } catch (e) {
+        showError(typeof I18N !== 'undefined' ? I18N.get('search.imageSearchFailed', '以图搜图失败') : '以图搜图失败');
+        clearStatus();
+      }
+    }
+
+    function showLoading() {
+      const grid = document.getElementById('resultsGrid');
+      grid.innerHTML = '';
+      const loading = document.createElement('div');
+      loading.className = 'loading';
+      loading.textContent = typeof I18N !== 'undefined' ? I18N.get('search.loading', '搜索中...') : '搜索中...';
+      grid.appendChild(loading);
+      document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function showError(msg) {
+      const grid = document.getElementById('resultsGrid');
+      grid.innerHTML = '';
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = msg;
+      grid.appendChild(empty);
+      clearStatus();
+    }
+
+    function setStatus(msg) {
+      const el = document.getElementById('searchStatus');
+      el.innerHTML = '';
+      if (!msg) return;
+      const div = document.createElement('div');
+      div.className = 'search-status';
+      div.textContent = msg;
+      el.appendChild(div);
+    }
+
+    function clearStatus() {
+      setStatus('');
+    }
+
+    function scrollToResults() {
+      const section = document.getElementById('resultsSection');
+      const headerOffset = 100;
+      const elementPosition = section.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    }
+
+    function renderResults(results, queryLabel) {
+      lastSearchResults = results;
+      lastQueryLabel = queryLabel || '';
+      const grid = document.getElementById('resultsGrid');
+      const count = document.getElementById('resultsCount');
+      const i18nFoundCount = typeof I18N !== 'undefined'
+        ? I18N.get('search.foundCount', '共 {count} 件相关藏品')
+        : '共 {count} 件相关藏品';
+      const i18nEmptyResult = typeof I18N !== 'undefined'
+        ? I18N.get('search.emptyResult', '未找到相关藏品，请尝试其他关键词')
+        : '未找到相关藏品，请尝试其他关键词';
+      const i18nBrowsePrompt = typeof I18N !== 'undefined'
+        ? I18N.get('search.browsePrompt', '，请向下浏览')
+        : '，请向下浏览';
+      count.textContent = i18nFoundCount.replace('{count}', results.length);
+
+      if (!results.length) {
+        grid.innerHTML = `<div class="empty">${i18nEmptyResult}</div>`;
+        setStatus(queryLabel ? `${queryLabel} · ${i18nEmptyResult}` : i18nEmptyResult);
+        scrollToResults();
+        return;
+      }
+
+      const statusMsg = queryLabel
+        ? `${queryLabel} · ${i18nFoundCount.replace('{count}', results.length)}${i18nBrowsePrompt}`
+        : `${i18nFoundCount.replace('{count}', results.length)}${i18nBrowsePrompt}`;
+      setStatus(statusMsg);
+
+      grid.innerHTML = '';
+      results.forEach(item => {
+        const img = item.images && item.images.length > 0 ? item.images[0] : null;
+        const imgUrl = img ? `./kb/${img.relative_path}` : './assets/images/xusi/logo_0.jpg';
+        const meta = [item.source, item.category, item.era].filter(Boolean).join(' · ');
+
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.addEventListener('click', () => viewDetail(item.id));
+
+        const imgEl = document.createElement('img');
+        imgEl.className = 'result-img';
+        imgEl.src = imgUrl;
+        imgEl.alt = item.name || '';
+        imgEl.loading = 'lazy';
+        card.appendChild(imgEl);
+
+        const info = document.createElement('div');
+        info.className = 'result-info';
+
+        const h3 = document.createElement('h3');
+        h3.textContent = item.name || '';
+        info.appendChild(h3);
+
+        const metaP = document.createElement('p');
+        metaP.className = 'result-meta';
+        metaP.textContent = meta;
+        info.appendChild(metaP);
+
+        const tagsDiv = document.createElement('div');
+        tagsDiv.className = 'result-tags';
+        (item.tags || []).slice(0, 5).forEach(t => {
+          const tagSpan = document.createElement('span');
+          tagSpan.className = 'result-tag';
+          tagSpan.textContent = t;
+          tagsDiv.appendChild(tagSpan);
+        });
+        info.appendChild(tagsDiv);
+
+        if (item.score) {
+          const scoreSpan = document.createElement('span');
+          scoreSpan.className = 'result-score';
+          scoreSpan.textContent = `相关度: ${(item.score * 100).toFixed(1)}%`;
+          info.appendChild(scoreSpan);
+        }
+
+        card.appendChild(info);
+        grid.appendChild(card);
+      });
+      scrollToResults();
+    }
+
+    function viewDetail(id) {
+      window.location.href = `./detail.html?id=${id}`;
+    }
+
+    // 回车搜索
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') performSearch();
+    });
+
+    async function init() {
+      await Promise.all([loadTags(), loadTagWeights()]);
+      const tag = getParam('tag');
+      if (tag) {
+        selectedTags = [tag];
+        document.querySelectorAll('.tag-item').forEach(el => {
+          if (el.textContent.trim() === tag) el.classList.add('active');
+        });
+        performTagSearch();
+      }
+    }
+
+    init();
+  </script>
+
+  <!-- 微信咨询弹窗 -->
+  <div class="modal" id="wechatModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeWechat()">×</button>
+      <h3>联系咨询</h3>
+      <p>请添加微信了解藏品详情、大师作品与活动报名</p>
+      <div class="wechat-qrcode">
+        <img src="./assets/images/xusi/wechat-qrcode.png" alt="微信二维码" class="qrcode-image">
+        <p>微信号：xusizhixiu</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./assets/main.js"></script>
+  <script src="./assets/i18n.js"></script>
+</body>
+</html>

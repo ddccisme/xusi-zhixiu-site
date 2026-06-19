@@ -1,0 +1,82 @@
+{
+  "nav": {
+    "home": "首页",
+    "products": "自营产品",
+    "collections": "藏品检索",
+    "masters": "合作大师",
+    "events": "展览活动",
+    "contact": "联系咨询"
+  },
+  "hero": {
+    "title": "叙思织绣",
+    "subtitle": "传统织绣文化 × 前沿智能技术",
+    "description": "在 AI 时代的新土壤中，让传统手工艺长出新的枝芽",
+    "explore": "探索藏品",
+    "inquiry": "联系咨询"
+  },
+  "search": {
+    "title": "藏品检索",
+    "subtitle": "穿越千年经纬，在 2000+ 件织绣藏品中寻觅东方之美",
+    "placeholder": "输入关键词：如 清代 刺绣 花卉",
+    "placeholderSemantic": "描述你想要的藏品：如 清代花鸟刺绣",
+    "placeholderName": "输入藏品名称关键词",
+    "placeholderImage": "点击上传图片，搜索相似藏品",
+    "button": "搜索",
+    "semantic": "语义搜索",
+    "name": "名称搜索",
+    "image": "以图搜图",
+    "popularTags": "热门标签",
+    "recommendedTags": "推荐标签",
+    "resetTags": "返回热门标签",
+    "uploadImage": "上传图片搜索相似藏品",
+    "resultsTitle": "搜索结果",
+    "resultsCount": "请输入关键词或选择标签",
+    "empty": "输入关键词、选择标签或上传图片开始探索藏品",
+    "loading": "搜索中...",
+    "searchFailed": "搜索失败，请确认搜索服务已启动",
+    "tagSearchFailed": "标签搜索失败",
+    "imageSearchFailed": "以图搜图失败",
+    "selectTags": "请选择标签开始探索",
+    "resultsFor": "结果",
+    "tagResults": "标签",
+    "imageResults": "上传的图片",
+    "foundCount": "共 {count} 件相关藏品",
+    "emptyResult": "未找到相关藏品，请尝试其他关键词",
+    "browsePrompt": "，请向下浏览",
+    "analyzingImage": "正在分析图片...",
+    "filteringTags": "正在筛选标签...",
+    "searchingSemantic": "正在语义搜索...",
+    "searchingName": "正在名称搜索..."
+  },
+  "detail": {
+    "breadcrumbHome": "首页",
+    "breadcrumbSearch": "藏品检索",
+    "size": "尺寸",
+    "material": "质地",
+    "era": "年代",
+    "collectionUnit": "收藏单位",
+    "author": "作者",
+    "level": "级别",
+    "contact": "联系咨询",
+    "back": "返回检索",
+    "showTags": "展示标签",
+    "hideTags": "收起标签",
+    "appreciation": "艺术评鉴",
+    "expert": "专家解读",
+    "description": "藏品描述",
+    "detailDesc": "详细描述",
+    "recommendations": "相关推荐",
+    "noRecommendations": "暂无相关推荐"
+  },
+  "footer": {
+    "brand": "传统织绣文化 × 前沿智能技术",
+    "wechat": "添加微信咨询",
+    "contact": "联系咨询",
+    "copyright": "© 2026 叙思织绣 Xu Si Zhi Xiu. 保留所有权利。"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "加载失败",
+    "close": "关闭"
+  }
+}

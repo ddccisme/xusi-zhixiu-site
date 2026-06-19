@@ -1,0 +1,82 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "collections": "Collections",
+    "masters": "Masters",
+    "events": "Events",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Xu Si Zhi Xiu",
+    "subtitle": "Traditional Textile Art × Cutting-Edge AI",
+    "description": "Let traditional craftsmanship grow new branches in the soil of the AI era",
+    "explore": "Explore Collections",
+    "inquiry": "Contact Us"
+  },
+  "search": {
+    "title": "Collection Search",
+    "subtitle": "Journey through thousands of years of textile heritage, discover the beauty of Oriental embroidery",
+    "placeholder": "Enter keywords: e.g. Qing Dynasty embroidery floral",
+    "placeholderSemantic": "Describe what you are looking for, e.g. Qing bird-and-flower embroidery",
+    "placeholderName": "Enter collection name keywords",
+    "placeholderImage": "Click to upload an image and search similar collections",
+    "button": "Search",
+    "semantic": "Semantic",
+    "name": "Name",
+    "image": "Image Search",
+    "popularTags": "Popular Tags",
+    "recommendedTags": "Recommended Tags",
+    "resetTags": "Back to Popular",
+    "uploadImage": "Upload an image to find similar collections",
+    "resultsTitle": "Search Results",
+    "resultsCount": "Enter keywords or select tags",
+    "empty": "Start exploring by keywords, tags, or image upload",
+    "loading": "Searching...",
+    "searchFailed": "Search failed. Please make sure the search service is running.",
+    "tagSearchFailed": "Tag search failed",
+    "imageSearchFailed": "Image search failed",
+    "selectTags": "Please select tags to start exploring",
+    "resultsFor": "Results for",
+    "tagResults": "Tags",
+    "imageResults": "Uploaded image",
+    "foundCount": "{count} related collections",
+    "emptyResult": "No related collections found, try other keywords",
+    "browsePrompt": ", scroll down to browse",
+    "analyzingImage": "Analyzing image...",
+    "filteringTags": "Filtering tags...",
+    "searchingSemantic": "Searching semantically...",
+    "searchingName": "Searching by name..."
+  },
+  "detail": {
+    "breadcrumbHome": "Home",
+    "breadcrumbSearch": "Collections",
+    "size": "Size",
+    "material": "Material",
+    "era": "Era",
+    "collectionUnit": "Collection Unit",
+    "author": "Author",
+    "level": "Level",
+    "contact": "Contact",
+    "back": "Back to Search",
+    "showTags": "Show Tags",
+    "hideTags": "Hide Tags",
+    "appreciation": "Appreciation",
+    "expert": "Expert Interpretation",
+    "description": "Description",
+    "detailDesc": "Details",
+    "recommendations": "Related Works",
+    "noRecommendations": "No related recommendations"
+  },
+  "footer": {
+    "brand": "Traditional Textile Art × Cutting-Edge AI",
+    "wechat": "Add WeChat",
+    "contact": "Contact",
+    "copyright": "© 2026 Xu Si Zhi Xiu. All rights reserved."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Failed to load",
+    "close": "Close"
+  }
+}

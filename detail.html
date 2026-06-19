@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>藏品详情 - 叙思织绣</title>
+  <meta name="description" content="查看叙思织绣藏品详情、工艺纹样、历史档案与AI艺术评鉴。">
+  <meta property="og:title" content="藏品详情 - 叙思织绣">
+  <meta property="og:description" content="查看藏品详情、工艺纹样、历史档案与AI艺术评鉴。">
+  <meta property="og:type" content="article">
+  <link rel="stylesheet" href="./assets/style.css">
+  <style>
+    .detail-page {
+      padding-top: 120px;
+      min-height: 100vh;
+    }
+    .detail-breadcrumb {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 40px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .detail-breadcrumb a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .detail-breadcrumb a:hover {
+      color: var(--accent);
+    }
+    .detail-hero {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+    .detail-gallery {
+      position: sticky;
+      top: 120px;
+      height: fit-content;
+    }
+    .detail-main-image {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    .detail-main-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .detail-image-caption {
+      margin-top: 12px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    .detail-summary h1 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+    .detail-tag {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(184, 145, 106, 0.1);
+      color: var(--accent);
+      border-radius: 4px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+    .detail-subtitle {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+    .detail-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .meta-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .meta-label {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+    .meta-value {
+      color: var(--text-primary);
+    }
+    .detail-actions {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .detail-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 60px 40px;
+      border-top: 1px solid var(--border-color);
+    }
+    .detail-section-header {
+      margin-bottom: 24px;
+    }
+    .detail-section-header h2 {
+      font-size: 1.5rem;
+    }
+    .detail-story-content p,
+    .detail-description p {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .detail-tags-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 16px;
+    }
+    .detail-tags-toggle:hover {
+      background: rgba(184, 145, 106, 0.1);
+    }
+    .detail-tags-toggle .arrow {
+      transition: transform 0.3s ease;
+    }
+    .detail-tags-toggle.active .arrow {
+      transform: rotate(180deg);
+    }
+    .detail-tags {
+      display: none;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+      animation: fadeIn 0.3s ease;
+    }
+    .detail-tags.visible {
+      display: flex;
+    }
+    .detail-tag-item {
+      padding: 6px 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .detail-tag-item:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .detail-recommendations {
+      margin-top: 48px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border-color);
+    }
+    .detail-recommendations h3 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+    .recommendation-cards {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 16px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .recommendation-card {
+      flex: 0 0 auto;
+      width: 180px;
+      scroll-snap-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .recommendation-card:hover {
+      transform: translateY(-4px);
+    }
+    .recommendation-card-image {
+      width: 180px;
+      height: 240px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      margin-bottom: 12px;
+      background: var(--card-bg);
+    }
+    .recommendation-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .recommendation-card:hover .recommendation-card-image img {
+      transform: scale(1.05);
+    }
+    .recommendation-card-name {
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      line-height: 1.4;
+      text-align: center;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    .recommendation-card-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    @media (max-width: 768px) {
+      .recommendation-cards {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+      }
+    }
+    .loading,
+    .error {
+      text-align: center;
+      padding: 120px 40px;
+      color: var(--text-muted);
+    }
+    @media (max-width: 768px) {
+      .detail-hero {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 32px;
+      }
+      .detail-gallery {
+        position: static;
+      }
+      .detail-meta {
+        grid-template-columns: 1fr;
+      }
+      .detail-section {
+        padding: 40px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header scrolled" id="header">
+    <div class="nav-inner">
+      <a href="./index.html#home" class="logo">
+        <img src="./assets/images/xusi/logo_0.jpg" alt="叙思织绣 Logo">
+        <span>叙思织绣</span>
+      </a>
+      <nav class="main-nav">
+        <a href="./index.html#home" data-i18n="nav.home">首页</a>
+        <a href="./index.html#products" data-i18n="nav.products">自营产品</a>
+        <a href="./search.html" data-i18n="nav.collections">藏品检索</a>
+        <a href="./index.html#masters" data-i18n="nav.masters">合作大师</a>
+        <a href="./index.html#events" data-i18n="nav.events">展览活动</a>
+      </nav>
+      <div class="header-actions">
+        <button class="lang-switch" data-i18n-toggle>EN</button>
+        <button class="btn-contact" onclick="openWechat()" data-i18n="nav.contact">联系咨询</button>
+      </div>
+      <button class="mobile-menu-btn" aria-label="菜单"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main class="detail-page" id="detailPage">
+    <div class="loading">加载中...</div>
+  </main>
+
+  <footer class="footer" id="contact">
+    <div class="footer-main">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="./assets/images/xusi/logo_0.jpg" alt="叙思织绣">
+            <span>叙思织绣</span>
+          </div>
+          <p>传统织绣文化 × 前沿智能技术</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 叙思织绣 Xu Si Zhi Xiu. 保留所有权利。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./assets/config.js"></script>
+  <script>
+    function getParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    async function loadDetail() {
+      const id = getParam('id');
+      const container = document.getElementById('detailPage');
+
+      if (!id) {
+        container.innerHTML = '<div class="error">缺少藏品 ID</div>';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/collections/${id}`);
+        if (!res.ok) throw new Error('藏品不存在');
+        const data = await res.json();
+        renderDetail(data);
+        loadRecommendations(data);
+      } catch (e) {
+        container.innerHTML = '<div class="error">加载失败，请确认搜索服务已启动</div>';
+      }
+    }
+
+    let tagsExpanded = false;
+
+    function toggleTags() {
+      const tagsEl = document.getElementById('detailTags');
+      const btn = document.getElementById('tagsToggle');
+      const label = btn.querySelector('span:first-child');
+      tagsExpanded = !tagsExpanded;
+      if (tagsExpanded) {
+        tagsEl.classList.add('visible');
+        btn.classList.add('active');
+        label.textContent = (typeof I18N !== 'undefined' ? I18N.get('detail.hideTags') : null) || '收起标签';
+      } else {
+        tagsEl.classList.remove('visible');
+        btn.classList.remove('active');
+        label.textContent = (typeof I18N !== 'undefined' ? I18N.get('detail.showTags') : null) || '展示标签';
+      }
+    }
+
+    function escapeHtml(text) {
+      if (text == null) return '';
+      const div = document.createElement('div');
+      div.textContent = String(text);
+      return div.innerHTML;
+    }
+
+    function renderDetail(item) {
+      const mainImage = item.images && item.images.length > 0 ? item.images[0] : null;
+      const imgUrl = mainImage ? `./kb/${mainImage.relative_path}` : './assets/images/xusi/logo_0.jpg';
+      const meta = [item.source, item.category, item.era].filter(Boolean).join(' · ');
+
+      const metaItems = [
+        { label: '尺寸', value: item.size },
+        { label: '质地', value: item.material },
+        { label: '年代', value: item.era },
+        { label: '收藏单位', value: item.collection_unit },
+        { label: '作者', value: item.author },
+        { label: '级别', value: item.level }
+      ].filter(m => m.value);
+
+      const container = document.getElementById('detailPage');
+      container.innerHTML = '';
+
+      // 面包屑
+      const breadcrumb = document.createElement('div');
+      breadcrumb.className = 'detail-breadcrumb';
+      breadcrumb.innerHTML = `<a href="./index.html#home">首页</a> / <a href="./search.html">藏品检索</a> / <span></span>`;
+      breadcrumb.querySelector('span').textContent = item.name || '';
+      container.appendChild(breadcrumb);
+
+      // Hero 区域
+      const hero = document.createElement('section');
+      hero.className = 'detail-hero';
+
+      const gallery = document.createElement('div');
+      gallery.className = 'detail-gallery';
+      const mainImgWrap = document.createElement('div');
+      mainImgWrap.className = 'detail-main-image';
+      const mainImg = document.createElement('img');
+      mainImg.src = imgUrl;
+      mainImg.alt = item.name || '';
+      mainImgWrap.appendChild(mainImg);
+      gallery.appendChild(mainImgWrap);
+      const caption = document.createElement('p');
+      caption.className = 'detail-image-caption';
+      caption.textContent = item.collection_unit || '';
+      gallery.appendChild(caption);
+      hero.appendChild(gallery);
+
+      const summary = document.createElement('div');
+      summary.className = 'detail-summary';
+
+      // 动态更新页面标题与 SEO meta
+      document.title = `${item.name || '藏品详情'} - 叙思织绣`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.content = `${item.name || '藏品详情'}：${item.description ? item.description.slice(0, 80) : '查看工艺纹样、历史档案与AI艺术评鉴。'}`;
+
+      const tag = document.createElement('span');
+      tag.className = 'detail-tag';
+      tag.textContent = meta || '藏品';
+      summary.appendChild(tag);
+
+      const title = document.createElement('h1');
+      title.textContent = item.name || '';
+      summary.appendChild(title);
+
+      const subtitle = document.createElement('p');
+      subtitle.className = 'detail-subtitle';
+      subtitle.textContent = item.description || '';
+      summary.appendChild(subtitle);
+
+      const metaWrap = document.createElement('div');
+      metaWrap.className = 'detail-meta';
+      metaItems.forEach(m => {
+        const mi = document.createElement('div');
+        mi.className = 'meta-item';
+        const ml = document.createElement('span');
+        ml.className = 'meta-label';
+        ml.textContent = m.label;
+        const mv = document.createElement('span');
+        mv.className = 'meta-value';
+        mv.textContent = m.value;
+        mi.appendChild(ml);
+        mi.appendChild(mv);
+        metaWrap.appendChild(mi);
+      });
+      summary.appendChild(metaWrap);
+
+      const actions = document.createElement('div');
+      actions.className = 'detail-actions';
+      const contactBtn = document.createElement('button');
+      contactBtn.className = 'btn-contact';
+      contactBtn.dataset.i18n = 'detail.contact';
+      contactBtn.textContent = '联系咨询';
+      contactBtn.addEventListener('click', openWechat);
+      const backLink = document.createElement('a');
+      backLink.href = './search.html';
+      backLink.className = 'btn-more';
+      backLink.dataset.i18n = 'detail.back';
+      backLink.textContent = '返回检索';
+      actions.appendChild(contactBtn);
+      actions.appendChild(backLink);
+      summary.appendChild(actions);
+
+      const tagsToggle = document.createElement('button');
+      tagsToggle.className = 'detail-tags-toggle';
+      tagsToggle.id = 'tagsToggle';
+      const toggleLabel = document.createElement('span');
+      toggleLabel.dataset.i18n = 'detail.showTags';
+      toggleLabel.textContent = '展示标签';
+      const toggleArrow = document.createElement('span');
+      toggleArrow.className = 'arrow';
+      toggleArrow.textContent = '▼';
+      tagsToggle.appendChild(toggleLabel);
+      tagsToggle.appendChild(toggleArrow);
+      tagsToggle.addEventListener('click', toggleTags);
+      summary.appendChild(tagsToggle);
+
+      const tagsEl = document.createElement('div');
+      tagsEl.className = 'detail-tags';
+      tagsEl.id = 'detailTags';
+      (item.tags || []).forEach(t => {
+        const span = document.createElement('span');
+        span.className = 'detail-tag-item';
+        span.textContent = t;
+        span.addEventListener('click', () => searchByTag(t));
+        tagsEl.appendChild(span);
+      });
+      summary.appendChild(tagsEl);
+
+      hero.appendChild(summary);
+      container.appendChild(hero);
+
+      // 艺术评鉴
+      const hasAppreciation = item.appreciation && item.appreciation !== '（待生成）' && item.appreciation !== '待生成';
+      if (hasAppreciation) {
+        const appSection = document.createElement('section');
+        appSection.className = 'detail-section';
+        appSection.innerHTML = `
+          <div class="detail-section-header">
+            <span class="section-tag">艺术评鉴</span>
+            <h2>专家解读</h2>
+          </div>
+          <div class="detail-story-content"></div>
+          <div class="detail-recommendations" id="recommendations">
+            <h3>相关推荐</h3>
+            <div class="recommendation-cards" id="recommendationCards">
+              <p style="color: var(--text-muted); text-align: center; width: 100%;">加载中...</p>
+            </div>
+          </div>
+        `;
+        const content = appSection.querySelector('.detail-story-content');
+        item.appreciation.split('\n').forEach(p => {
+          if (!p.trim()) return;
+          const para = document.createElement('p');
+          para.textContent = p;
+          content.appendChild(para);
+        });
+        container.appendChild(appSection);
+      }
+
+      // 详细描述
+      const descSection = document.createElement('section');
+      descSection.className = 'detail-section';
+      descSection.innerHTML = `
+        <div class="detail-section-header">
+          <span class="section-tag">藏品描述</span>
+          <h2>详细描述</h2>
+        </div>
+        <div class="detail-description"></div>
+      `;
+      const descWrap = descSection.querySelector('.detail-description');
+      if (item.description && item.description.trim()) {
+        item.description.split('\n').forEach(p => {
+          if (!p.trim()) return;
+          const para = document.createElement('p');
+          para.textContent = p;
+          descWrap.appendChild(para);
+        });
+      } else {
+        const para = document.createElement('p');
+        para.textContent = '暂无描述';
+        descWrap.appendChild(para);
+      }
+      container.appendChild(descSection);
+    }
+
+    function searchByTag(tag) {
+      window.location.href = `./search.html?tag=${encodeURIComponent(tag)}`;
+    }
+
+    // 语言切换后，保持标签按钮文本与展开状态一致
+    document.addEventListener('i18n:applied', () => {
+      const btn = document.getElementById('tagsToggle');
+      if (!btn) return;
+      const label = btn.querySelector('span:first-child');
+      if (tagsExpanded) {
+        label.textContent = (typeof I18N !== 'undefined' ? I18N.get('detail.hideTags') : null) || '收起标签';
+      } else {
+        label.textContent = (typeof I18N !== 'undefined' ? I18N.get('detail.showTags') : null) || '展示标签';
+      }
+    });
+
+    async function loadRecommendations(item) {
+      const container = document.getElementById('recommendationCards');
+      if (!container) return;
+
+      try {
+        // 优先用标签搜索，没有标签则用来源搜索
+        const tags = (item.tags || []).filter(t => t && t.trim());
+        let results = [];
+
+        if (tags.length > 0) {
+          const tagQuery = tags.slice(0, 5).join(',');
+          const res = await fetch(`${API_BASE}/search/tags?tags=${encodeURIComponent(tagQuery)}&top_k=12`);
+          const data = await res.json();
+          results = data.results || [];
+        }
+
+        // 如果标签搜索结果不足，补充同来源藏品
+        if (results.length < 6 && item.source) {
+          const res = await fetch(`${API_BASE}/collections`);
+          const data = await res.json();
+          const sameSource = (data.collections || []).filter(c => c.source === item.source && c.id !== item.id);
+          results = results.concat(sameSource);
+        }
+
+        // 去重并排除当前藏品
+        const seen = new Set();
+        const related = [];
+        for (const c of results) {
+          if (c.id === item.id || seen.has(c.id)) continue;
+          seen.add(c.id);
+          related.push(c);
+          if (related.length >= 6) break;
+        }
+
+        if (related.length === 0) {
+          container.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%;">暂无相关推荐</p>';
+          return;
+        }
+
+        container.innerHTML = '';
+        related.forEach(c => {
+          const imgUrl = c.images && c.images.length > 0 ? `./kb/${c.images[0].relative_path}` : './assets/images/xusi/logo_0.jpg';
+          const metaText = [c.source, c.era].filter(Boolean).join(' · ');
+          const card = document.createElement('div');
+          card.className = 'recommendation-card';
+          card.addEventListener('click', () => viewDetail(c.id));
+
+          const imgWrap = document.createElement('div');
+          imgWrap.className = 'recommendation-card-image';
+          const imgEl = document.createElement('img');
+          imgEl.src = imgUrl;
+          imgEl.alt = c.name || '';
+          imgEl.loading = 'lazy';
+          imgWrap.appendChild(imgEl);
+          card.appendChild(imgWrap);
+
+          const nameEl = document.createElement('div');
+          nameEl.className = 'recommendation-card-name';
+          nameEl.textContent = c.name || '';
+          card.appendChild(nameEl);
+
+          const metaEl = document.createElement('div');
+          metaEl.className = 'recommendation-card-meta';
+          metaEl.textContent = metaText;
+          card.appendChild(metaEl);
+
+          container.appendChild(card);
+        });
+      } catch (e) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%;">相关推荐加载失败</p>';
+      }
+    }
+
+    function viewDetail(id) {
+      window.location.href = `./detail.html?id=${id}`;
+    }
+
+    loadDetail();
+  </script>
+
+  <!-- 微信咨询弹窗 -->
+  <div class="modal" id="wechatModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeWechat()">×</button>
+      <h3>联系咨询</h3>
+      <p>请添加微信了解藏品详情、大师作品与活动报名</p>
+      <div class="wechat-qrcode">
+        <img src="./assets/images/xusi/wechat-qrcode.png" alt="微信二维码" class="qrcode-image">
+        <p>微信号：xusizhixiu</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./assets/main.js"></script>
+  <script src="./assets/i18n.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+# Python 虚拟环境
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Obsidian 配置与缓存
+kb/.obsidian/
+kb/.trash/
+
+# macOS
+.DS_Store
+
+# 临时文件
+*.tmp
+*.log
+
+# 构建缓存（可选，若希望数据库/JSON 作为产物提交则保留）
+# data/collections.sqlite
+# data/collections.json
+# data/tags.json
+
+# 搜索服务运行时生成的静态文件沙箱
+__static__/
+
+# 知识库图片附件（体积大，可由 Markdown 笔记重建索引后重新关联）
+kb/Attachments/
+
+# 构建生成的数据产物（可由脚本从知识库重新生成）
+data/collections.sqlite
+data/collections.sqlite-journal
+data/collections.sqlite.bak
+data/collections.json
+data/collections.json.bak
+data/tags.json
+data/tag_weights.json
+data/text.index
+data/text.mapping.json
+data/image_hashes.json
+data/appreciation_progress.json
