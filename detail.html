@@ -472,7 +472,7 @@
       const lens = document.getElementById('zoomLens');
       const zoomOverlay = document.getElementById('zoomOverlay');
       const summaryWrap = document.querySelector('.detail-summary-wrap');
-      if (!mainImageWrap || !lens || !zoomOverlay || !summaryWrap) return;
+      if (!mainImageWrap || !mainImage || !lens || !zoomOverlay || !summaryWrap) return;
 
       // 没有图片时不启用放大镜
       if (galleryImages.length === 0) return;
@@ -481,63 +481,59 @@
       if (!zoomImage) return;
 
       const updateZoomImage = () => {
-        const url = encodeURI(zoomOverlay.dataset.src || mainImage.src);
+        // dataset.src 是相对路径，需要编码；mainImage.src 已被浏览器解析为编码后的绝对路径，直接复用
+        let url = zoomOverlay.dataset.src || mainImage.src;
+        if (url === zoomOverlay.dataset.src) url = encodeURI(url);
         if (zoomImage.src !== url) zoomImage.src = url;
+      };
+
+      const showZoom = (clientX, clientY) => {
+        if (window.innerWidth <= 768) return;
+        if (mainImage.naturalWidth === 0) return;
+        const imgRect = mainImage.getBoundingClientRect();
+        if (imgRect.width === 0 || imgRect.height === 0) return;
+
+        lens.style.display = 'block';
+        zoomOverlay.style.display = 'block';
+        updateZoomImage();
+
+        const lensW = lens.offsetWidth || 120;
+        const lensH = lens.offsetHeight || 120;
+        let x = clientX - imgRect.left;
+        let y = clientY - imgRect.top;
+        let lensX = x - lensW / 2;
+        let lensY = y - lensH / 2;
+        lensX = Math.max(0, Math.min(lensX, imgRect.width - lensW));
+        lensY = Math.max(0, Math.min(lensY, imgRect.height - lensH));
+        lens.style.left = `${lensX}px`;
+        lens.style.top = `${lensY}px`;
+
+        const overlayW = zoomOverlay.offsetWidth || summaryWrap.offsetWidth || 1;
+        const overlayH = zoomOverlay.offsetHeight || summaryWrap.offsetHeight || 1;
+        const ratioX = overlayW / lensW;
+        const ratioY = overlayH / lensH;
+        const scaledW = imgRect.width * ratioX;
+        const scaledH = imgRect.height * ratioY;
+        const offsetX = -lensX * ratioX;
+        const offsetY = -lensY * ratioY;
+
+        zoomImage.style.width = `${scaledW}px`;
+        zoomImage.style.height = `${scaledH}px`;
+        zoomImage.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      };
+
+      const hideZoom = () => {
+        lens.style.display = 'none';
+        zoomOverlay.style.display = 'none';
       };
 
       const bindZoomEvents = () => {
         mainImageWrap.addEventListener('mouseenter', () => {
-          if (mainImage.naturalWidth === 0) return;
-          // 桌面端才启用放大镜
-          if (window.innerWidth <= 768) return;
-          lens.style.display = 'block';
-          zoomOverlay.style.display = 'block';
-          updateZoomImage();
+          const rect = mainImage.getBoundingClientRect();
+          showZoom(rect.left + rect.width / 2, rect.top + rect.height / 2);
         });
-
-        mainImageWrap.addEventListener('mouseleave', () => {
-          lens.style.display = 'none';
-          zoomOverlay.style.display = 'none';
-        });
-
-        mainImageWrap.addEventListener('mousemove', (e) => {
-          if (window.innerWidth <= 768) return;
-          const imgRect = mainImage.getBoundingClientRect();
-          const lensW = lens.offsetWidth || 120;
-          const lensH = lens.offsetHeight || 120;
-
-          if (imgRect.width === 0 || imgRect.height === 0) return;
-
-          // 鼠标相对于图片的位置
-          let x = e.clientX - imgRect.left;
-          let y = e.clientY - imgRect.top;
-
-          // lens 中心跟随鼠标
-          let lensX = x - lensW / 2;
-          let lensY = y - lensH / 2;
-
-          // 限制 lens 不超出图片范围
-          lensX = Math.max(0, Math.min(lensX, imgRect.width - lensW));
-          lensY = Math.max(0, Math.min(lensY, imgRect.height - lensH));
-
-          lens.style.left = `${lensX}px`;
-          lens.style.top = `${lensY}px`;
-
-          // 计算放大区域：overlay 尺寸 / lens 尺寸 = 放大倍数
-          const overlayW = zoomOverlay.offsetWidth || summaryWrap.offsetWidth || 1;
-          const overlayH = zoomOverlay.offsetHeight || summaryWrap.offsetHeight || 1;
-          const ratioX = overlayW / lensW;
-          const ratioY = overlayH / lensH;
-
-          const scaledW = imgRect.width * ratioX;
-          const scaledH = imgRect.height * ratioY;
-          const offsetX = -lensX * ratioX;
-          const offsetY = -lensY * ratioY;
-
-          zoomImage.style.width = `${scaledW}px`;
-          zoomImage.style.height = `${scaledH}px`;
-          zoomImage.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-        });
+        mainImageWrap.addEventListener('mouseleave', hideZoom);
+        mainImageWrap.addEventListener('mousemove', (e) => showZoom(e.clientX, e.clientY));
       };
 
       if (mainImage.complete && mainImage.naturalWidth > 0) {
@@ -638,9 +634,6 @@
 
       hero.appendChild(summaryWrap);
 
-      // 初始化图片画廊交互
-      initImageGallery(images, item.name);
-
       const summary = document.createElement('div');
       summary.className = 'detail-summary';
 
@@ -724,6 +717,9 @@
 
       summaryWrap.appendChild(summary);
       container.appendChild(hero);
+
+      // 初始化图片画廊交互（必须在 hero 加入 DOM 后，summaryWrap 才能被 querySelector 找到）
+      initImageGallery(images, item.name);
 
       // 艺术评鉴
       const hasAppreciation = item.appreciation && item.appreciation !== '（待生成）' && item.appreciation !== '待生成';
