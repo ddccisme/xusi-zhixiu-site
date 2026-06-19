@@ -261,26 +261,34 @@ document.addEventListener('DOMContentLoaded', function() {
     filterRelics();
   }
 
-  // 初始化来源按钮事件
-  document.querySelectorAll('.relic-filter[data-source]').forEach(btn => {
-    btn.addEventListener('click', handleSourceClick);
-  });
+  // 初始化来源按钮事件（只在有筛选容器的页面生效）
+  if (sourceFilterGroup && typeFilterGroup && eraFilterGroup) {
+    document.querySelectorAll('.relic-filter[data-source]').forEach(btn => {
+      btn.addEventListener('click', handleSourceClick);
+    });
 
-  // 初始化类型、年代按钮
-  handleSourceClick({ currentTarget: document.querySelector('.relic-filter[data-source="all"]') });
+    // 初始化类型、年代按钮
+    const defaultSourceBtn = document.querySelector('.relic-filter[data-source="all"]');
+    if (defaultSourceBtn) {
+      handleSourceClick({ currentTarget: defaultSourceBtn });
+    }
+  }
 
-  // 合作机构标签切换
+  // 合作机构标签切换（只在有对应 DOM 的页面生效）
   const partnerTabs = document.querySelectorAll('.partner-tab');
   const partnerPanels = document.querySelectorAll('.partners-panel');
 
-  partnerTabs.forEach(tab => {
-    tab.addEventListener('click', function() {
-      partnerTabs.forEach(t => t.classList.remove('active'));
-      partnerPanels.forEach(p => p.classList.remove('active'));
-      this.classList.add('active');
-      document.getElementById(this.dataset.tab).classList.add('active');
+  if (partnerTabs.length > 0 && partnerPanels.length > 0) {
+    partnerTabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        partnerTabs.forEach(t => t.classList.remove('active'));
+        partnerPanels.forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        const panel = document.getElementById(this.dataset.tab);
+        if (panel) panel.classList.add('active');
+      });
     });
-  });
+  }
 
   // 平滑滚动
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
