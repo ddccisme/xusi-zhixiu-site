@@ -54,10 +54,11 @@ function formatDate(dateStr) {
 }
 
 function getMainImage(item) {
+  // 列表接口返回 main_image，详情接口返回 metadata.images
+  if (item.main_image) return item.main_image;
   const images = item.images || (item.metadata && item.metadata.images) || [];
   if (!images.length) return null;
-  const main = images.find(img => img.is_main) || images[0];
-  return main;
+  return images.find(img => img.is_main) || images[0];
 }
 
 function imageUrl(path) {
@@ -112,6 +113,12 @@ function populateFilters() {
 
   sourceSelect.innerHTML = '<option value="">全部来源</option>' +
     state.options.sources.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+
+  // 分类选项使用第一个来源的分类列表（当前各来源分类已统一）
+  const firstSource = state.options.sources[0] || '';
+  const categories = state.options.categories[firstSource] || [];
+  categorySelect.innerHTML = '<option value="">全部分类</option>' +
+    categories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
 }
 
 function bindEvents() {
@@ -271,8 +278,16 @@ async function uploadFilesForPreview(files) {
 
 // ==================== 渲染 ====================
 function renderContent() {
-  if (state.view === 'drafts') renderDrafts();
-  else renderCollections();
+  if (state.view === 'drafts') {
+    renderDrafts();
+  } else {
+    // 切换到已入库藏品视图时，若尚未加载则自动加载
+    if (!state.collections.length && state.collectionTotal === 0) {
+      loadCollections();
+    } else {
+      renderCollections();
+    }
+  }
 }
 
 function renderDrafts() {

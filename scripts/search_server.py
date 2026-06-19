@@ -65,6 +65,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # 加载索引
 text_index = None
 text_mapping = []
@@ -643,7 +644,19 @@ tag_weights_dst = data_dir_static / "tag_weights.json"
 if tag_weights_src.exists() and not tag_weights_dst.exists():
     os.symlink(tag_weights_src.resolve(), tag_weights_dst)
 
-app.mount("/", StaticFiles(directory=str(static_dir), html=True, follow_symlink=True), name="static")
+class NoCacheStaticFiles(StaticFiles):
+    """开发阶段禁用 HTML/JS/CSS 缓存，避免修改后浏览器仍使用旧版本"""
+    async def get_response(self, path: str, scope):
+        response = await super().get_response(path, scope)
+        request_path = scope.get("path", "")
+        if request_path.endswith((".html", ".js", ".css")) or request_path in ("", "/"):
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+        return response
+
+
+app.mount("/", NoCacheStaticFiles(directory=str(static_dir), html=True, follow_symlink=True), name="static")
 
 
 def main():
