@@ -15,6 +15,7 @@ import json
 import os
 import re
 import shutil
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -463,7 +464,7 @@ def save_draft(draft: Dict[str, Any], temp_dir: Path, backup: bool = True) -> Di
 
     note_path.write_text(frontmatter.dumps(post), encoding="utf-8")
 
-    return {
+    result = {
         "id": id_str,
         "name": name,
         "source": source,
@@ -471,6 +472,8 @@ def save_draft(draft: Dict[str, Any], temp_dir: Path, backup: bool = True) -> Di
         "images": new_images,
         "saved": True,
     }
+    result["sync"] = sync_note_to_db(note_path)
+    return result
 
 
 def archive_collection(id_str: str, source: str) -> bool:
@@ -488,16 +491,18 @@ def archive_collection(id_str: str, source: str) -> bool:
             break
 
     if not note_path:
-        return False
+        return {"archived": False, "error": "藏品不存在"}
     try:
         post = frontmatter.load(note_path)
         post.metadata["status"] = "archived"
         post.metadata["updated_at"] = now_str()
         note_path.write_text(frontmatter.dumps(post), encoding="utf-8")
-        return True
+        result = {"archived": True, "id": id_str, "note_path": str(note_path.relative_to(PROJECT_ROOT))}
+        result["sync"] = sync_note_to_db(note_path)
+        return result
     except Exception as e:
         print(f"归档失败 {note_path}: {e}")
-        return False
+        return {"archived": False, "error": str(e)}
 
 
 def list_collections(
@@ -650,7 +655,10 @@ def save_existing_collection(id_str: str, data: Dict[str, Any]) -> Dict[str, Any
         })
     new_meta["images"] = normalized_images
 
-    sections = data.get("sections", extract_sections(post.content or ""))
+    # 合并提交章节与原始章节：提交覆盖原始，原始独有的章节保留
+    original_sections = extract_sections(post.content or "")
+    submitted_sections = data.get("sections", {})
+    sections = {**original_sections, **submitted_sections}
     if "描述" not in sections:
         sections["描述"] = "（暂无描述）"
     if "艺术评鉴" not in sections:
@@ -671,12 +679,34 @@ def save_existing_collection(id_str: str, data: Dict[str, Any]) -> Dict[str, Any
     if new_note_path != note_path and note_path.exists():
         note_path.unlink()
 
-    return {
+    result = {
         "saved": True,
         "id": id_str,
         "name": name,
         "note_path": str(new_note_path.relative_to(PROJECT_ROOT)),
     }
+    result["sync"] = sync_note_to_db(new_note_path)
+    return result
+
+
+def sync_note_to_db(note_path: Path) -> Dict[str, Any]:
+    """将单个笔记增量同步到 SQLite 数据库（秒级）"""
+    try:
+        import build_kb
+        db_path = build_kb.DEFAULT_DB
+        vault_path = build_kb.DEFAULT_VAULT
+        collection, errors = build_kb.parse_note(note_path, vault_path)
+        if collection is None:
+            return {"success": False, "error": errors}
+
+        conn = sqlite3.connect(db_path, timeout=60)
+        try:
+            is_new = build_kb.sync_collection(conn, collection)
+        finally:
+            conn.close()
+        return {"success": True, "is_new": is_new, "id": collection["id"]}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
 
 
 def run_build_kb(full: bool = True) -> Dict[str, Any]:

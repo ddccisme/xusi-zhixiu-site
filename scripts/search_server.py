@@ -480,10 +480,10 @@ def api_admin_collection_save(collection_id: str, req: CollectionSaveRequest):
 @app.delete("/api/admin/collections/{collection_id}")
 def api_admin_collection_archive(collection_id: str, source: str = Query(default="")):
     """管理后台：归档藏品"""
-    success = kb_admin.archive_collection(collection_id, source=source)
-    if not success:
-        return JSONResponse(status_code=404, content={"error": "藏品不存在"})
-    return {"archived": True, "id": collection_id}
+    result = kb_admin.archive_collection(collection_id, source=source)
+    if not result.get("archived"):
+        return JSONResponse(status_code=404, content={"error": result.get("error", "藏品不存在")})
+    return result
 
 
 @app.post("/api/admin/import/preview")
