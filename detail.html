@@ -105,9 +105,13 @@
       overflow: hidden;
       border: 1px solid var(--border-color);
       background-color: var(--card-bg);
-      background-repeat: no-repeat;
       display: none;
       z-index: 10;
+    }
+    .detail-zoom-overlay img {
+      display: block;
+      width: auto;
+      height: auto;
     }
     .detail-image-caption {
       margin-top: 12px;
@@ -467,18 +471,28 @@
       const mainImage = document.getElementById('mainImage');
       const lens = document.getElementById('zoomLens');
       const zoomOverlay = document.getElementById('zoomOverlay');
-      if (!mainImageWrap || !lens || !zoomOverlay) return;
+      const summaryWrap = document.querySelector('.detail-summary-wrap');
+      if (!mainImageWrap || !lens || !zoomOverlay || !summaryWrap) return;
 
       // 没有图片时不启用放大镜
       if (galleryImages.length === 0) return;
 
+      const zoomImage = document.getElementById('zoomImage');
+      if (!zoomImage) return;
+
+      const updateZoomImage = () => {
+        const url = encodeURI(zoomOverlay.dataset.src || mainImage.src);
+        if (zoomImage.src !== url) zoomImage.src = url;
+      };
+
       const bindZoomEvents = () => {
         mainImageWrap.addEventListener('mouseenter', () => {
           if (mainImage.naturalWidth === 0) return;
+          // 桌面端才启用放大镜
+          if (window.innerWidth <= 768) return;
           lens.style.display = 'block';
           zoomOverlay.style.display = 'block';
-          const url = encodeURI(zoomOverlay.dataset.src || mainImage.src);
-          zoomOverlay.style.backgroundImage = `url("${url}")`;
+          updateZoomImage();
         });
 
         mainImageWrap.addEventListener('mouseleave', () => {
@@ -487,6 +501,7 @@
         });
 
         mainImageWrap.addEventListener('mousemove', (e) => {
+          if (window.innerWidth <= 768) return;
           const imgRect = mainImage.getBoundingClientRect();
           const lensW = lens.offsetWidth || 120;
           const lensH = lens.offsetHeight || 120;
@@ -508,18 +523,20 @@
           lens.style.left = `${lensX}px`;
           lens.style.top = `${lensY}px`;
 
-          // 计算放大区域：overlay 中背景图的偏移
-          // overlay 尺寸 / lens 尺寸 = 放大倍数
-          const ratioX = zoomOverlay.offsetWidth / lensW;
-          const ratioY = zoomOverlay.offsetHeight / lensH;
+          // 计算放大区域：overlay 尺寸 / lens 尺寸 = 放大倍数
+          const overlayW = zoomOverlay.offsetWidth || summaryWrap.offsetWidth || 1;
+          const overlayH = zoomOverlay.offsetHeight || summaryWrap.offsetHeight || 1;
+          const ratioX = overlayW / lensW;
+          const ratioY = overlayH / lensH;
 
-          const bgWidth = imgRect.width * ratioX;
-          const bgHeight = imgRect.height * ratioY;
-          const bgPosX = -lensX * ratioX;
-          const bgPosY = -lensY * ratioY;
+          const scaledW = imgRect.width * ratioX;
+          const scaledH = imgRect.height * ratioY;
+          const offsetX = -lensX * ratioX;
+          const offsetY = -lensY * ratioY;
 
-          zoomOverlay.style.backgroundSize = `${bgWidth}px ${bgHeight}px`;
-          zoomOverlay.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
+          zoomImage.style.width = `${scaledW}px`;
+          zoomImage.style.height = `${scaledH}px`;
+          zoomImage.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
         });
       };
 
@@ -607,6 +624,16 @@
       const zoomOverlay = document.createElement('div');
       zoomOverlay.className = 'detail-zoom-overlay';
       zoomOverlay.id = 'zoomOverlay';
+      const zoomImage = document.createElement('img');
+      zoomImage.id = 'zoomImage';
+      zoomImage.alt = '';
+      zoomImage.style.position = 'absolute';
+      zoomImage.style.top = '0';
+      zoomImage.style.left = '0';
+      zoomImage.style.pointerEvents = 'none';
+      zoomImage.style.maxWidth = 'none';
+      zoomImage.style.maxHeight = 'none';
+      zoomOverlay.appendChild(zoomImage);
       summaryWrap.appendChild(zoomOverlay);
 
       hero.appendChild(summaryWrap);
