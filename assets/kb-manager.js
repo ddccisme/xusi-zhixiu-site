@@ -310,7 +310,7 @@ function renderDrafts() {
 
 function createDraftCard(draft) {
   const mainImg = draft.images && draft.images.length > 0 ? draft.images[0] : null;
-  const imgUrl = mainImg ? `./kb/${draft._temp_dir || state.tempDir}/${mainImg.filename}` : '';
+  const imgUrl = mainImg ? (mainImg.url || `./kb/${draft._temp_dir || state.tempDir}/${mainImg.filename}`) : '';
   const tags = draft.metadata.tags || [];
 
   const card = document.createElement('div');
@@ -641,9 +641,10 @@ function tagChipHtml(text) {
 }
 
 function imageItemHtml(img, idx, isDraft) {
-  const path = img.path
-    ? imageUrl(img.path)
-    : (isDraft && state.tempDir ? `./kb/${state.tempDir}/${img.filename}` : '');
+  // 优先使用服务端生成的临时 URL（草稿预览阶段），其次是持久化路径
+  const path = img.url
+    ? img.url
+    : (img.path ? imageUrl(img.path) : '');
   const filename = img.filename || '';
   return `
     <div class="image-item" data-index="${idx}" data-filename="${escapeHtml(filename)}">

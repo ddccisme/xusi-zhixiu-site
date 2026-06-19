@@ -30,6 +30,7 @@ import imagehash
 import numpy as np
 import requests
 from fastapi import FastAPI, File, Form, Query, UploadFile
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -70,6 +71,9 @@ app.add_middleware(
 text_index = None
 text_mapping = []
 image_hashes = []
+
+# 导入预览临时目录映射：temp_dir_name -> Path
+_import_temp_dirs: Dict[str, Path] = {}
 
 
 def load_indexes():
@@ -498,13 +502,23 @@ def api_admin_import_preview(files: List[UploadFile] = File(...)):
             target_path.write_bytes(content)
 
         drafts = kb_admin.parse_import_folder(temp_dir)
+        temp_dir_name = temp_dir.name
+        _import_temp_dirs[temp_dir_name] = temp_dir
+
+        # 为草稿图片生成可访问的临时 URL
+        for draft in drafts:
+            for img in draft.get("images", []):
+                img["url"] = f"/api/admin/import/temp/{temp_dir_name}/{img['filename']}"
+
         return {
             "count": len(drafts),
             "drafts": drafts,
             "temp_dir": str(temp_dir),
+            "temp_dir_name": temp_dir_name,
         }
     except Exception as e:
         shutil.rmtree(temp_dir, ignore_errors=True)
+        _import_temp_dirs.pop(temp_dir.name, None)
         return JSONResponse(status_code=500, content={"error": f"导入解析失败: {e}"})
 
 
@@ -533,8 +547,30 @@ def api_admin_import_commit(req: DraftCommitRequest):
     # 清理临时目录
     if temp_dir and temp_dir.exists():
         shutil.rmtree(temp_dir, ignore_errors=True)
+    if temp_dir:
+        _import_temp_dirs.pop(temp_dir.name, None)
 
     return {"saved": saved, "errors": errors, "count": len(saved)}
+
+
+@app.get("/api/admin/import/temp/{temp_dir_name}/{filename:path}")
+def api_admin_import_temp_file(temp_dir_name: str, filename: str):
+    """服务导入预览阶段的临时图片"""
+    temp_dir = _import_temp_dirs.get(temp_dir_name)
+    if not temp_dir:
+        return JSONResponse(status_code=404, content={"error": "临时目录不存在或已过期"})
+
+    file_path = temp_dir / filename
+    # 防止目录遍历
+    try:
+        file_path.resolve().relative_to(temp_dir.resolve())
+    except ValueError:
+        return JSONResponse(status_code=400, content={"error": "非法文件路径"})
+
+    if not file_path.exists() or not file_path.is_file():
+        return JSONResponse(status_code=404, content={"error": "文件不存在"})
+
+    return FileResponse(str(file_path))
 
 
 @app.post("/api/admin/images/upload")
