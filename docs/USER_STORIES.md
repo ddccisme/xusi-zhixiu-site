@@ -313,6 +313,6 @@
 ## 9. 相关文档
 
 - `docs/PRD.md` — 产品需求文档
-- `implementation_plan.md` — 详细实施计划
+- `docs/implementation_plan.md` — 详细实施计划
 - `docs/PROJECT_STATUS.md` — 项目当前状态
 - `docs/PROJECT_ISSUES.md` — 项目问题与风险

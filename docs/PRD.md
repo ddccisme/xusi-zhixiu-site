@@ -425,10 +425,10 @@
 ├── detail-laoshucantian.html   # 自营产品详情页示例
 ├── README.md                   # 项目说明
 ├── AGENTS.md                   # AI/Agent 开发指南
-├── implementation_plan.md      # 详细实施计划
 ├── docs/                       # 项目文档
 │   ├── PRD.md                  # 产品需求文档
 │   ├── USER_STORIES.md         # 用户故事
+│   ├── implementation_plan.md  # 详细实施计划
 │   ├── PROJECT_STATUS.md       # 项目当前状态
 │   └── PROJECT_ISSUES.md       # 项目问题与风险
 ├── requirements.txt            # Python 依赖
@@ -547,6 +547,6 @@ python3 -m http.server 8080
 
 - `README.md` — 项目说明与快速开始
 - `docs/USER_STORIES.md` — 用户故事与验收标准
-- `implementation_plan.md` — 详细实施计划与里程碑
+- `docs/implementation_plan.md` — 详细实施计划与里程碑
 - `docs/PROJECT_STATUS.md` — 项目当前状态与待办清单
 - `docs/PROJECT_ISSUES.md` — 已知问题、技术债务与风险

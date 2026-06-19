@@ -12,7 +12,6 @@
 ├── detail-laoshucantian.html   # 藏品详情页示例
 ├── README.md                   # 项目说明
 ├── AGENTS.md                   # AI/Agent 开发指南
-├── implementation_plan.md      # 详细实施计划
 ├── docs/                       # 项目文档
 │   ├── PRD.md                  # 产品需求文档
 │   ├── USER_STORIES.md         # 用户故事
@@ -217,6 +216,6 @@ python scripts/search_server.py
 
 - `docs/PRD.md` — 产品需求文档
 - `docs/USER_STORIES.md` — 用户故事与验收标准
-- `implementation_plan.md` — 详细实施计划与里程碑
+- `docs/implementation_plan.md` — 详细实施计划与里程碑
 - `docs/PROJECT_STATUS.md` — 项目当前状态与待办
 - `docs/PROJECT_ISSUES.md` — 已知问题、技术债务与风险
