@@ -25,11 +25,11 @@
 
 | 文档 | 用途 |
 |-----|------|
-| `PRD.md` | 产品需求文档 |
-| `USER_STORIES.md` | 用户故事与验收标准 |
+| `docs/PRD.md` | 产品需求文档 |
+| `docs/USER_STORIES.md` | 用户故事与验收标准 |
 | `implementation_plan.md` | 详细实施计划与里程碑 |
 | `PROJECT_STATUS.md` | 项目当前状态快照（本文档） |
-| `PROJECT_ISSUES.md` | 已知问题、技术债务与风险 |
+| `docs/PROJECT_ISSUES.md` | 已知问题、技术债务与风险 |
 | `README.md` | 项目说明与快速开始 |
 
 ---
@@ -224,10 +224,10 @@ python scripts/ai_appreciation.py --provider kimi --model moonshot-v1-8k --limit
 
 ## 8. 相关文档
 
-- `PRD.md` — 产品需求文档
-- `USER_STORIES.md` — 用户故事与验收标准
+- `docs/PRD.md` — 产品需求文档
+- `docs/USER_STORIES.md` — 用户故事与验收标准
 - `implementation_plan.md` — 详细实施计划与里程碑
-- `PROJECT_ISSUES.md` — 已知问题、技术债务与风险
+- `docs/PROJECT_ISSUES.md` — 已知问题、技术债务与风险
 - `README.md` — 项目说明与快速开始
 - `kb/README.md` — 知识库使用规范
 - `scripts/` — 构建、迁移、检索、AI 评鉴脚本

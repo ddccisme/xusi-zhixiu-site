@@ -236,7 +236,7 @@
 
 ## 6. 相关文档
 
-- `PRD.md` — 产品需求文档
-- `USER_STORIES.md` — 用户故事
+- `docs/PRD.md` — 产品需求文档
+- `docs/USER_STORIES.md` — 用户故事
 - `implementation_plan.md` — 详细实施计划
-- `PROJECT_STATUS.md` — 项目当前状态
+- `docs/PROJECT_STATUS.md` — 项目当前状态
