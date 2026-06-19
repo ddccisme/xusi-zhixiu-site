@@ -94,24 +94,20 @@
       position: relative;
       min-height: 420px;
     }
+    .detail-summary {
+      position: relative;
+      z-index: 1;
+    }
     .detail-zoom-overlay {
       position: absolute;
       inset: 0;
       border-radius: 8px;
       overflow: hidden;
       border: 1px solid var(--border-color);
-      background: var(--card-bg);
+      background-color: var(--card-bg);
+      background-repeat: no-repeat;
       display: none;
       z-index: 10;
-    }
-    .detail-zoom-overlay img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 200%;
-      height: auto;
-      max-width: none;
-      pointer-events: none;
     }
     .detail-image-caption {
       margin-top: 12px;
@@ -452,11 +448,12 @@
       if (!galleryImages[index]) return;
       const img = galleryImages[index];
       const mainImage = document.getElementById('mainImage');
-      const zoomOverlayImg = document.getElementById('zoomOverlayImg');
+      const zoomOverlay = document.getElementById('zoomOverlay');
       const url = img.relative_path ? `./kb/${img.relative_path}` : './assets/images/xusi/logo_0.jpg';
       mainImage.src = url;
       mainImage.alt = (img.alt || galleryItemName || '') + ' 主图';
-      if (zoomOverlayImg) zoomOverlayImg.src = url;
+      if (zoomOverlay) zoomOverlay.style.backgroundImage = '';
+      if (zoomOverlay) zoomOverlay.dataset.src = url;
 
       document.querySelectorAll('.detail-thumbnail').forEach((t, i) => {
         t.classList.toggle('active', i === index);
@@ -470,16 +467,16 @@
       const mainImage = document.getElementById('mainImage');
       const lens = document.getElementById('zoomLens');
       const zoomOverlay = document.getElementById('zoomOverlay');
-      const zoomOverlayImg = document.getElementById('zoomOverlayImg');
       if (!mainImageWrap || !lens || !zoomOverlay) return;
 
-      // 只在非触摸设备启用放大镜
-      const isTouch = window.matchMedia('(pointer: coarse)').matches;
-      if (isTouch || galleryImages.length === 0) return;
+      // 没有图片时不启用放大镜
+      if (galleryImages.length === 0) return;
 
       mainImageWrap.addEventListener('mouseenter', () => {
         lens.style.display = 'block';
         zoomOverlay.style.display = 'block';
+        const url = zoomOverlay.dataset.src || mainImage.src;
+        zoomOverlay.style.backgroundImage = `url("${url}")`;
       });
 
       mainImageWrap.addEventListener('mouseleave', () => {
@@ -488,7 +485,6 @@
       });
 
       mainImageWrap.addEventListener('mousemove', (e) => {
-        const rect = mainImageWrap.getBoundingClientRect();
         const imgRect = mainImage.getBoundingClientRect();
         const lensW = lens.offsetWidth || 120;
         const lensH = lens.offsetHeight || 120;
@@ -508,17 +504,18 @@
         lens.style.left = `${lensX}px`;
         lens.style.top = `${lensY}px`;
 
-        // 计算放大区域：overlay 中图片的偏移
+        // 计算放大区域：overlay 中背景图的偏移
         // overlay 尺寸 / lens 尺寸 = 放大倍数
         const ratioX = zoomOverlay.offsetWidth / lensW;
         const ratioY = zoomOverlay.offsetHeight / lensH;
 
-        const imgOffsetX = -lensX * ratioX;
-        const imgOffsetY = -lensY * ratioY;
+        const bgWidth = imgRect.width * ratioX;
+        const bgHeight = imgRect.height * ratioY;
+        const bgPosX = -lensX * ratioX;
+        const bgPosY = -lensY * ratioY;
 
-        zoomOverlayImg.style.width = `${imgRect.width * ratioX}px`;
-        zoomOverlayImg.style.height = 'auto';
-        zoomOverlayImg.style.transform = `translate(${imgOffsetX}px, ${imgOffsetY}px)`;
+        zoomOverlay.style.backgroundSize = `${bgWidth}px ${bgHeight}px`;
+        zoomOverlay.style.backgroundPosition = `${bgPosX}px ${bgPosY}px`;
       });
     }
 
@@ -599,11 +596,6 @@
       const zoomOverlay = document.createElement('div');
       zoomOverlay.className = 'detail-zoom-overlay';
       zoomOverlay.id = 'zoomOverlay';
-      const zoomOverlayImg = document.createElement('img');
-      zoomOverlayImg.id = 'zoomOverlayImg';
-      zoomOverlayImg.src = imgUrl;
-      zoomOverlayImg.alt = item.name || '';
-      zoomOverlay.appendChild(zoomOverlayImg);
       summaryWrap.appendChild(zoomOverlay);
 
       hero.appendChild(summaryWrap);
